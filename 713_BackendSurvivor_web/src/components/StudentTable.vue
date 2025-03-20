@@ -95,11 +95,13 @@ function handleSubmit() {
             class="hover:bg-gray-50 transition-colors duration-200"
           >
             <td class="px-6 py-4 whitespace-nowrap">
-              <img
-                :src="student.user.profile"
-                alt="Profile"
-                class="h-10 w-10 rounded-full object-cover border-2 border-gray-200"
-              />
+              <div class="flex-shrink-0 relative w-10 h-10">
+                <img
+                  :src="student.user.profile"
+                  alt="Profile"
+                  class="absolute inset-0 w-full h-full rounded-full object-cover border-2 border-gray-300 ring-2 ring-blue-500 ring-offset-2 ring-offset-white"
+                />
+              </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
               {{ student.studentId }}
