@@ -14,6 +14,9 @@ const router = createRouter({
       path: '/admin-students',
       name: 'admin-students',
       component: StudentView,
+      props: (route) => ({
+        page: parseInt(route.query.page as string) || 1,
+      }),
     },
     {
       path: '/about',

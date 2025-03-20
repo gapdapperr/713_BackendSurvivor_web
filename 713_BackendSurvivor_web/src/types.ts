@@ -4,6 +4,14 @@ export interface Student {
   firstName: string
   lastName: string
   profilePicture: string
-  department: string
-  advisor: string
+  department: {
+    name: string
+  }
+  teacher?: {
+    firstName: string
+    lastName: string
+    academicPosition: {
+      title: string
+    }
+  }
 }
