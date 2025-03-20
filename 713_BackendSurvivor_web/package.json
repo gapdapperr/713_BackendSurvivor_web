@@ -1,5 +1,5 @@
 {
-  "name": "713-backendsurvivor-web",
+  "name": "713-frontend",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -13,27 +13,36 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "713-backendsurvivor-web": "file:",
-    "bootstrap": "^5.3.3",
+    "@jamescoyle/vue-icon": "^0.1.2",
+    "@mdi/js": "^7.4.47",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/vite": "^4.0.14",
+    "713-frontend": "file:",
+    "axios": "^1.8.2",
+    "nprogress": "^0.2.0",
     "pinia": "^3.0.1",
+    "tailwindcss": "^4.0.14",
+    "vee-validate": "^4.15.0",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.0"
+    "vue-router": "^4.5.0",
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
-    "@types/node": "^22.13.9",
+    "@types/node": "^22.13.4",
+    "@types/nprogress": "^0.2.3",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/eslint-config-prettier": "^10.2.0",
-    "@vue/eslint-config-typescript": "^14.5.0",
+    "@vue/eslint-config-typescript": "^14.4.0",
     "@vue/tsconfig": "^0.7.0",
-    "eslint": "^9.21.0",
-    "eslint-plugin-vue": "~10.0.0",
+    "eslint": "^9.20.1",
+    "eslint-plugin-vue": "^9.32.0",
     "jiti": "^2.4.2",
     "npm-run-all2": "^7.0.2",
-    "prettier": "3.5.3",
-    "typescript": "~5.8.0",
-    "vite": "^6.2.1",
+    "prettier": "^3.5.1",
+    "typescript": "~5.7.3",
+    "vite": "^6.1.0",
     "vite-plugin-vue-devtools": "^7.7.2",
-    "vue-tsc": "^2.2.8"
+    "vue-tsc": "^2.2.2"
   }
 }
