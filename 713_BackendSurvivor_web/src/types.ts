@@ -3,8 +3,12 @@ export interface Student {
   studentId: string
   firstName: string
   lastName: string
-  profilePicture: string
+  user: {
+    id: number
+    profile: string
+  }
   department: {
+    id: number
     name: string
   }
   teacher?: {

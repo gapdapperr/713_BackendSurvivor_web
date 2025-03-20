@@ -96,7 +96,7 @@ function handleSubmit() {
           >
             <td class="px-6 py-4 whitespace-nowrap">
               <img
-                :src="student.profilePicture"
+                :src="student.user.profile"
                 alt="Profile"
                 class="h-10 w-10 rounded-full object-cover border-2 border-gray-200"
               />
