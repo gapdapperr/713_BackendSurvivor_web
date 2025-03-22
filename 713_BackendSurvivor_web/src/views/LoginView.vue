@@ -1,4 +1,14 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+const username = ref('')
+const password = ref('')
+</script>
+
 <template>
+  <pre>
+    {{ username }}
+    {{ password }}
+  </pre>
       <div class="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
@@ -54,7 +64,7 @@
             </div>
           </form>
           <p class="mt-10 text-center text-sm text-gray-500">
-            you are student?
+            Are you student?
             {{ ' ' }}
             <a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
               >Register</a
