@@ -1,14 +1,6 @@
-import type { AxiosInstance } from 'axios'
-import axios from 'axios'
+import apiClient from '@/services/AxiosClient'
 import { defineStore } from 'pinia'
-const apiClient: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: false,
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-  },
-})
+
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: null as string | null,
