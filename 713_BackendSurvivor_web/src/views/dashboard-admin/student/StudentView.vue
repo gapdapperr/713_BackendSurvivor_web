@@ -29,7 +29,7 @@ const fetchStudents = async () => {
     isLoading.value = true
     const response = await StudentService.getStudents(page.value, pageSize, keyword.value)
     students.value = response.data
-    totalStudents.value = response.headers['x-total-count']
+    totalStudents.value = parseInt(response.headers['x-total-count'])
   } catch (error) {
     router.push({ name: 'network-error-view' })
   } finally {
@@ -43,7 +43,7 @@ async function handleSearch() {
   StudentService.getStudents(1, pageSize, keyword.value)
     .then((response) => {
       students.value = response.data
-      totalStudents.value = response.headers['x-total-count']
+      totalStudents.value = parseInt(response.headers['x-total-count'])
     })
     .catch(() => {
       router.push({ name: 'network-error-view' })
@@ -58,7 +58,7 @@ watchEffect(() => {
   StudentService.getStudents(page.value, pageSize, '')
     .then((response) => {
       students.value = response.data
-      totalStudents.value = response.headers['x-total-count']
+      totalStudents.value = parseInt(response.headers['x-total-count'])
     })
     .catch(() => {
       router.push({ name: 'network-error-view' })
@@ -116,7 +116,7 @@ watchEffect(() => {
       :currentPage="page"
       :totalItems="totalStudents"
       :pageSize="pageSize"
-      routeName="admin-students"
+      routeName="admin-students-view"
       :keyword="keyword"
     />
   </div>

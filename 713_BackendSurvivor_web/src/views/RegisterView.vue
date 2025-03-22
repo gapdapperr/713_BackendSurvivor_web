@@ -19,15 +19,12 @@ const imagePreview = ref('')
 const validationSchema = yup.object({
   username: yup
     .string()
-    .required('Student ID is required')
-    .matches(/^\d{9}$/, 'Student ID must be 9 digits'),
-  password: yup
-    .string()
-    .required('Password is required')
-    .min(6, 'Password must be at least 6 characters'),
-  firstName: yup.string().required('First name is required'),
-  lastName: yup.string().required('Last name is required'),
-  departmentId: yup.string().required('Department is required'),
+    .required('กรุณากรอกรหัสนักศึกษา')
+    .matches(/^\d{9}$/, 'รหัสนักศึกษาต้องเป็นตัวเลข 9 หลัก'),
+  password: yup.string().required('กรุณากรอกรหัสผ่าน').min(6, 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร'),
+  firstName: yup.string().required('กรุณากรอกชื่อ'),
+  lastName: yup.string().required('กรุณากรอกนามสกุล'),
+  departmentId: yup.string().required('กรุณาเลือกภาควิชา'),
 })
 
 // Form handling
@@ -58,7 +55,7 @@ function handleFileUpload(event: Event) {
       profileImage.value = file
       imagePreview.value = URL.createObjectURL(file)
     } else {
-      messageStore.updateMessage('Please select an image file')
+      messageStore.updateMessage('กรุณาเลือกไฟล์รูปภาพ')
     }
   }
 }
@@ -87,11 +84,10 @@ const onSubmit = handleSubmit(async (values) => {
     )
 
     router.push({ name: 'login-view' })
-    messageStore.updateMessage('Registration successful! Please login.')
+    messageStore.updateMessage('ลงทะเบียนสำเร็จ! กรุณาเข้าสู่ระบบ')
   } catch (error: any) {
     console.error('Registration error:', error)
-    // More detailed error message
-    const errorMessage = error.response?.data?.message || 'Could not complete registration'
+    const errorMessage = error.response?.data?.message || 'ไม่สามารถลงทะเบียนได้'
     messageStore.updateMessage(errorMessage)
   }
 })
@@ -101,7 +97,7 @@ const onSubmit = handleSubmit(async (values) => {
   <div class="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
       <h2 class="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-        Create new account
+        สร้างบัญชีผู้ใช้ใหม่
       </h2>
     </div>
 
@@ -139,14 +135,14 @@ const onSubmit = handleSubmit(async (values) => {
         <!-- Username (Student ID) -->
         <div>
           <label for="username" class="block text-sm font-medium leading-6 text-gray-900">
-            Student ID
+            รหัสนักศึกษา
           </label>
           <div class="mt-2">
             <InputText
               id="username"
               type="text"
               v-model="username"
-              placeholder="Enter your student ID"
+              placeholder="กรอกรหัสนักศึกษา"
               :error="errors['username']"
             />
           </div>
@@ -155,14 +151,14 @@ const onSubmit = handleSubmit(async (values) => {
         <!-- Password -->
         <div>
           <label for="password" class="block text-sm font-medium leading-6 text-gray-900">
-            Password
+            รหัสผ่าน
           </label>
           <div class="mt-2">
             <InputText
               id="password"
               type="password"
               v-model="password"
-              placeholder="Enter your password"
+              placeholder="กรอกรหัสผ่าน"
               :error="errors['password']"
             />
           </div>
@@ -171,14 +167,14 @@ const onSubmit = handleSubmit(async (values) => {
         <!-- First Name -->
         <div>
           <label for="firstName" class="block text-sm font-medium leading-6 text-gray-900">
-            First Name
+            ชื่อ
           </label>
           <div class="mt-2">
             <InputText
               id="firstName"
               type="text"
               v-model="firstName"
-              placeholder="Enter your first name"
+              placeholder="กรอกชื่อ"
               :error="errors['firstName']"
             />
           </div>
@@ -187,14 +183,14 @@ const onSubmit = handleSubmit(async (values) => {
         <!-- Last Name -->
         <div>
           <label for="lastName" class="block text-sm font-medium leading-6 text-gray-900">
-            Last Name
+            นามสกุล
           </label>
           <div class="mt-2">
             <InputText
               id="lastName"
               type="text"
               v-model="lastName"
-              placeholder="Enter your last name"
+              placeholder="กรอกนามสกุล"
               :error="errors['lastName']"
             />
           </div>
@@ -203,7 +199,7 @@ const onSubmit = handleSubmit(async (values) => {
         <!-- Department Selection -->
         <div>
           <label for="departmentId" class="block text-sm font-medium leading-6 text-gray-900">
-            Department
+            ภาควิชา
           </label>
           <div class="mt-2">
             <select
@@ -212,7 +208,7 @@ const onSubmit = handleSubmit(async (values) => {
               class="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               :class="{ 'ring-red-300 focus:ring-red-600': errors['departmentId'] }"
             >
-              <option value="">Select your department</option>
+              <option value="">เลือกภาควิชา</option>
               <option v-for="dept in departments" :key="dept.id" :value="dept.id.toString()">
                 {{ dept.name }}
               </option>
@@ -229,20 +225,20 @@ const onSubmit = handleSubmit(async (values) => {
             type="submit"
             class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Register
+            ลงทะเบียน
           </button>
         </div>
       </form>
 
       <!-- Login Link -->
       <p class="mt-10 text-center text-sm text-gray-500">
-        Already have an account?
+        มีบัญชีผู้ใช้แล้ว?
         {{ ' ' }}
         <router-link
           :to="{ name: 'login-view' }"
           class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
         >
-          Sign in here
+          เข้าสู่ระบบที่นี่
         </router-link>
       </p>
     </div>

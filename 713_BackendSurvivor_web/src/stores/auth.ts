@@ -2,17 +2,57 @@ import { defineStore } from 'pinia'
 import apiClient from '@/services/AxiosClient'
 import type { User } from '@/types'
 
+interface NavigationItem {
+  name: string
+  routeName: string
+}
+
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: null as string | null,
     user: null as User | null,
   }),
+
   getters: {
     currentUserName(): string {
       return this.user?.username || ''
     },
     isAdmin(): boolean {
       return this.user?.role.includes('ROLE_ADMIN') || false
+    },
+    isTeacher(): boolean {
+      return this.user?.role.includes('ROLE_TEACHER') || false
+    },
+    isStudent(): boolean {
+      return this.user?.role.includes('ROLE_STUDENT') || false
+    },
+    navigationItems(): NavigationItem[] {
+      if (this.isAdmin) {
+        return [
+          { name: 'หน้าหลักผู้ดูแลระบบ', routeName: 'admin-dashboard-view' },
+          { name: 'จัดการอาจารย์', routeName: 'admin-teachers-view' },
+          { name: 'จัดการนักศึกษา', routeName: 'admin-students-view' },
+          { name: 'สรุปข้อมูล', routeName: 'admin-summary-view' },
+        ]
+      } else if (this.isTeacher) {
+        return [
+          { name: 'หน้าหลักอาจารย์', routeName: 'teacher-dashboard-view' },
+          { name: 'รายชื่อนักศึกษา', routeName: 'teacher-students-view' },
+          { name: 'จัดการประกาศ', routeName: 'teacher-announcements-view' },
+          { name: 'การนัดหมาย', routeName: 'teacher-appointments-view' },
+        ]
+      } else if (this.isStudent) {
+        return [
+          { name: 'หน้าหลักนักศึกษา', routeName: 'student-dashboard-view' },
+          { name: 'อาจารย์ที่ปรึกษา', routeName: 'student-teacher-view' },
+          { name: 'ประกาศ', routeName: 'student-announcements-view' },
+          { name: 'การนัดหมาย', routeName: 'student-appointments-view' },
+        ]
+      }
+      return []
+    },
+    isAuthenticated(): boolean {
+      return !!this.token && !!this.user
     },
   },
 
@@ -23,15 +63,15 @@ export const useAuthStore = defineStore('auth', {
         password: password,
       })
       this.token = response.data.access_token
-      localStorage.setItem('token', this.token as string)
+      localStorage.setItem('access_token', this.token as string)
       const meResponse = await apiClient.get('/api/v1/auth/me')
       this.user = meResponse.data.user
       localStorage.setItem('user', JSON.stringify(this.user))
 
       return response
     },
+
     logout() {
-      console.log('logout')
       this.token = null
       this.user = null
       localStorage.removeItem('access_token')

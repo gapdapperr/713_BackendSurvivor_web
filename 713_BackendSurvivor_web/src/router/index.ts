@@ -1,7 +1,12 @@
-import LoginView from '@/views/LoginView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import StudentView from '../views/dashboard-admin/student/StudentView.vue'
-import TestLoginView from '@/views/TestLoginView.vue'
+import LandingView from '@/views/LandingView.vue'
+import LoginView from '@/views/LoginView.vue'
+import RegisterView from '@/views/RegisterView.vue'
+import StudentView from '@/views/dashboard-admin/student/StudentView.vue'
+import TestPageView from '@/views/TestPageView.vue'
+import AdminDashboardView from '@/views/dashboard-admin/DashboardView.vue'
+import StudentDashboardView from '@/views/dashboard-student/DashboardView.vue'
+import TeacherDashboardView from '@/views/dashboard-teacher/DashboardView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import NetworkErrorView from '@/views/NetworkErrorView.vue'
 
@@ -9,22 +14,100 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/',
+      name: 'landing-view',
+      component: LandingView,
+    },
+    {
       path: '/login',
-      name: 'login',
+      name: 'login-view',
       component: LoginView,
     },
     {
-      path: '/test-login',
-      name: 'test-login',
-      component: TestLoginView,
+      path: '/register',
+      name: 'register-view',
+      component: RegisterView,
     },
     {
-      path: '/admin-students',
-      name: 'admin-students',
-      component: StudentView,
-      props: (route) => ({
-        page: parseInt(route.query.page as string) || 1,
-      }),
+      path: '/admin',
+      meta: { requiresAuth: true, role: 'ROLE_ADMIN' },
+      children: [
+        {
+          path: '',
+          name: 'admin-dashboard-view',
+          component: AdminDashboardView,
+        },
+        {
+          path: 'teachers',
+          name: 'admin-teachers-view',
+          component: TestPageView,
+        },
+        {
+          path: 'students',
+          name: 'admin-students-view',
+          component: StudentView,
+          props: (route) => ({
+            page: parseInt(route.query.page as string) || 1,
+          }),
+        },
+        {
+          path: 'summary',
+          name: 'admin-summary-view',
+          component: TestPageView,
+        },
+      ],
+    },
+    {
+      path: '/teacher',
+      meta: { requiresAuth: true, role: 'ROLE_TEACHER' },
+      children: [
+        {
+          path: '',
+          name: 'teacher-dashboard-view',
+          component: TeacherDashboardView,
+        },
+        {
+          path: 'students',
+          name: 'teacher-students-view',
+          component: TestPageView,
+        },
+        {
+          path: 'announcements',
+          name: 'teacher-announcements-view',
+          component: TestPageView,
+        },
+        {
+          path: 'appointments',
+          name: 'teacher-appointments-view',
+          component: TestPageView,
+        },
+      ],
+    },
+    {
+      path: '/student',
+      meta: { requiresAuth: true, role: 'ROLE_STUDENT' },
+      children: [
+        {
+          path: '',
+          name: 'student-dashboard-view',
+          component: StudentDashboardView,
+        },
+        {
+          path: 'teacher',
+          name: 'student-teacher-view',
+          component: TestPageView,
+        },
+        {
+          path: 'announcements',
+          name: 'student-announcements-view',
+          component: TestPageView,
+        },
+        {
+          path: 'appointments',
+          name: 'student-appointments-view',
+          component: TestPageView,
+        },
+      ],
     },
     {
       path: '/network-error',
