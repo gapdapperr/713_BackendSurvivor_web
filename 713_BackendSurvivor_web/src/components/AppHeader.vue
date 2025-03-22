@@ -12,7 +12,7 @@ const authStore = useAuthStore()
 <template>
   <header class="bg-gradient-to-r from-blue-500 to-blue-700 text-white shadow-lg">
     <div class="wrapper max-w-7xl mx-auto px-4 py-6 flex justify-between items-center">
-      <h1 class="text-3xl font-bold tracking-wide">Student Mentor System</h1>
+      <h1 class="text-3xl font-bold tracking-wide">Student Advisor Management"</h1>
 
       <!-- Guest Navigation -->
       <nav v-if="!authStore.isAuthenticated" class="flex items-center space-x-6">
