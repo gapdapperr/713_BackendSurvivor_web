@@ -5,7 +5,7 @@ import * as yup from 'yup'
 import { useField, useForm } from 'vee-validate'
 import { useRouter } from 'vue-router'
 import { useMessageStore } from '@/stores/message'
-import type { Department } from '@/type'
+import type { Department } from '@/types'
 import RegisterService from '@/services/RegisterService'
 import DepartmentService from '@/services/DepartmentService'
 

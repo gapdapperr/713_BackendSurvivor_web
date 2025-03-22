@@ -1,19 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import LoginView from '@/views/LoginView.vue'
-import RegisterView from '@/views/RegisterView.vue'
+import StudentView from '../views/admin/student/StudentView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/login',
-      name: 'login-view',
-      component: LoginView,
-    },
-    {
-      path: '/register',
-      name: 'register-view',
-      component: RegisterView,
+      path: '/admin-students',
+      name: 'admin-students',
+      component: StudentView,
+      props: (route) => ({
+        page: parseInt(route.query.page as string) || 1,
+      }),
     },
   ],
 })
