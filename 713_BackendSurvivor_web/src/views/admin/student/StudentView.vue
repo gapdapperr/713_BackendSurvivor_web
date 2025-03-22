@@ -4,6 +4,7 @@ import StudentTable from '@/components/StudentTable.vue'
 import StudentService from '@/services/StudentService'
 import type { Student } from '@/types'
 import { useRouter } from 'vue-router'
+import Pagination from '@/components/Pagination.vue'
 
 interface Props {
   page: number
@@ -18,45 +19,9 @@ const keyword = ref('')
 const isLoading = ref(false)
 
 const pageSize = 10
-const totalPages = computed(() => Math.ceil(totalStudents.value / pageSize))
 const hasNextPage = computed(() => {
   const totalPages = Math.ceil(totalStudents.value / pageSize)
   return page.value < totalPages
-})
-
-// เพิ่ม computed property สำหรับจำกัดจำนวนปุ่มหน้า
-const visiblePageNumbers = computed(() => {
-  const currentPage = page.value
-  const total = totalPages.value
-  const delta = 2 // จำนวนปุ่มที่จะแสดงข้างๆ หน้าปัจจุบัน
-
-  // สร้าง array เก็บหมายเลขหน้าที่จะแสดง
-  let pages: (number | string)[] = []
-
-  // คำนวณช่วงหน้าที่จะแสดง
-  const range = {
-    start: Math.max(1, currentPage - delta),
-    end: Math.min(total, currentPage + delta),
-  }
-
-  // เพิ่มปุ่มหน้าแรกและจุดไข่ปลา
-  if (range.start > 1) {
-    pages.push(1)
-    if (range.start > 2) pages.push('...')
-  }
-
-  // เพิ่มปุ่มหน้าในช่วงที่คำนวณ
-  for (let i = range.start; i <= range.end; i++) {
-    pages.push(i)
-  }
-
-  // เพิ่มปุ่มหน้าสุดท้ายและจุดไข่ปลา
-  if (range.end < total) {
-    if (range.end < total - 1) pages.push('...')
-    pages.push(total)
-  }
-
-  return pages
 })
 
 const fetchStudents = async () => {
@@ -145,126 +110,15 @@ watchEffect(() => {
 
     <!-- Student Table -->
     <StudentTable v-else :students="students" :onRefresh="fetchStudents" />
-    <!-- Pagination Controls -->
-    <div
-      class="mt-6 flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
-    >
-      <!-- Mobile pagination controls -->
-      <div class="flex flex-1 justify-between sm:hidden">
-        <RouterLink
-          :to="{ name: 'admin-students', query: { page: page - 1, keyword } }"
-          :class="[
-            'relative inline-flex items-center rounded-md px-4 py-2 text-sm font-medium',
-            page !== 1
-              ? 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
-              : 'border border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed',
-          ]"
-          :aria-disabled="page === 1"
-          v-if="page !== 1"
-        >
-          ก่อนหน้า
-        </RouterLink>
-        <RouterLink
-          :to="{ name: 'admin-students', query: { page: page + 1, keyword } }"
-          :class="[
-            'relative ml-3 inline-flex items-center rounded-md px-4 py-2 text-sm font-medium',
-            hasNextPage
-              ? 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
-              : 'border border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed',
-          ]"
-          :aria-disabled="!hasNextPage"
-          v-if="hasNextPage"
-        >
-          ถัดไป
-        </RouterLink>
-      </div>
 
-      <!-- Desktop pagination controls -->
-      <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-        <div>
-          <p class="text-sm text-gray-700">
-            แสดง
-            <span class="font-medium">{{ (page - 1) * pageSize + 1 }}</span>
-            ถึง
-            <span class="font-medium">{{ Math.min(page * pageSize, totalStudents) }}</span>
-            จากทั้งหมด
-            <span class="font-medium">{{ totalStudents }}</span>
-            รายการ
-          </p>
-        </div>
-        <div>
-          <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-            <!-- Previous page button -->
-            <RouterLink
-              :to="{ name: 'admin-students', query: { page: page - 1, keyword } }"
-              :class="[
-                'relative inline-flex items-center rounded-l-md px-2 py-2',
-                page !== 1
-                  ? 'text-gray-500 ring-1 ring-inset ring-gray-300 hover:bg-gray-50'
-                  : 'text-gray-300 cursor-not-allowed',
-              ]"
-              :aria-disabled="page === 1"
-              v-if="page !== 1"
-            >
-              <span class="sr-only">Previous</span>
-              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path
-                  fill-rule="evenodd"
-                  d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-            </RouterLink>
-
-            <!-- Page numbers -->
-            <template v-for="pageNum in visiblePageNumbers" :key="pageNum">
-              <!-- จุดไข่ปลา -->
-              <span
-                v-if="pageNum === '...'"
-                class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700"
-              >
-                ...
-              </span>
-              <!-- ปุ่มตัวเลข -->
-              <RouterLink
-                v-else
-                :to="{ name: 'admin-students', query: { page: pageNum, keyword } }"
-                :class="[
-                  'relative inline-flex items-center px-4 py-2 text-sm font-semibold',
-                  pageNum === page
-                    ? 'z-10 bg-blue-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'
-                    : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0',
-                ]"
-              >
-                {{ pageNum }}
-              </RouterLink>
-            </template>
-
-            <!-- Next page button -->
-            <RouterLink
-              :to="{ name: 'admin-students', query: { page: page + 1, keyword } }"
-              :class="[
-                'relative inline-flex items-center rounded-r-md px-2 py-2',
-                hasNextPage
-                  ? 'text-gray-500 ring-1 ring-inset ring-gray-300 hover:bg-gray-50'
-                  : 'text-gray-300 cursor-not-allowed',
-              ]"
-              :aria-disabled="!hasNextPage"
-              v-if="hasNextPage"
-            >
-              <span class="sr-only">Next</span>
-              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path
-                  fill-rule="evenodd"
-                  d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-            </RouterLink>
-          </nav>
-        </div>
-      </div>
-    </div>
+    <!-- Pagination -->
+    <Pagination
+      :currentPage="page"
+      :totalItems="totalStudents"
+      :pageSize="pageSize"
+      routeName="admin-students"
+      :keyword="keyword"
+    />
   </div>
 </template>
 
