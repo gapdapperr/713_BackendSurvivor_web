@@ -10,12 +10,24 @@ const authStore = useAuthStore()
 const router = useRouter()
 const messageStore = useMessageStore()
 const validationSchema = yup.object({
-  // username: yup.string().required('The username is required'),
-  password: yup
-    .string()
-    .required('The password is required')
-    .min(5, 'The password must be at least 5 characters.'),
+  username: yup.string().required('กรุณากรอกชื่อผู้ใช้'),
+  password: yup.string().required('กรุณากรอกรหัสผ่าน').min(5, 'รหัสผ่านต้องมีอย่างน้อย 5 ตัวอักษร'),
 })
+
+const redirectToDashboard = () => {
+  if (authStore.isAdmin) {
+    router.push({ name: 'admin-dashboard-view' })
+  } else if (authStore.isTeacher) {
+    router.push({ name: 'teacher-dashboard-view' })
+  } else if (authStore.isStudent) {
+    router.push({ name: 'student-dashboard-view' })
+  } else {
+    // Fallback if role is not recognized
+    messageStore.updateMessage('ไม่มีสิทธิ์เข้าใช้งานระบบ')
+    authStore.logout()
+  }
+}
+
 const { errors, handleSubmit } = useForm({
   validationSchema,
   initialValues: {
@@ -23,14 +35,16 @@ const { errors, handleSubmit } = useForm({
     password: '',
   },
 })
+
 const { value: username } = useField<string>('username')
 const { value: password } = useField<string>('password')
+
 const onSubmit = handleSubmit(async (values: { username: string; password: string }) => {
   try {
     await authStore.login(values.username, values.password)
-    router.push({ name: 'test-login' })
-  } catch {
-    messageStore.updateMessage('Could not login')
+    redirectToDashboard()
+  } catch (error) {
+    messageStore.updateMessage('ไม่สามารถเข้าสู่ระบบได้')
     setTimeout(() => {
       messageStore.resetMessage()
     }, 3000)
@@ -44,24 +58,24 @@ const onSubmit = handleSubmit(async (values: { username: string; password: strin
       <img
         class="mx-auto h-10 w-auto"
         src="https://tailwindcss.com/_next/static/media/tailwindcss-mark.d52e9897.svg"
-        alt="Your Company"
+        alt="ระบบอาจารย์ที่ปรึกษา"
       />
       <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-        Sign in to your account
+        เข้าสู่ระบบ
       </h2>
     </div>
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
       <form class="space-y-6" @submit.prevent="onSubmit">
         <div>
           <label for="username" class="block text-sm font-medium leading-6 text-gray-900"
-            >Username</label
+            >ชื่อผู้ใช้</label
           >
           <div class="mt-2">
             <InputText
               id="username"
               type="username"
               v-model="username"
-              placeholder="Username"
+              placeholder="กรอกชื่อผู้ใช้"
               :error="errors['username']"
             />
           </div>
@@ -69,19 +83,19 @@ const onSubmit = handleSubmit(async (values: { username: string; password: strin
         <div>
           <div class="flex items-center justify-between">
             <label for="password" class="block text-sm font-medium leading-6 text-gray-900"
-              >Password</label
+              >รหัสผ่าน</label
             >
-            <div class="text-sm">
+            <!-- <div class="text-sm">
               <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500"
-                >Forgot password?</a
+                >ลืมรหัสผ่าน?</a
               >
-            </div>
+            </div> -->
           </div>
           <div class="mt-2">
             <InputText
               type="password"
               v-model="password"
-              placeholder="Password"
+              placeholder="กรอกรหัสผ่าน"
               :error="errors['password']"
               autocomplete="false"
             />
@@ -92,16 +106,19 @@ const onSubmit = handleSubmit(async (values: { username: string; password: strin
             type="submit"
             class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Sign in
+            เข้าสู่ระบบ
           </button>
         </div>
       </form>
       <p class="mt-10 text-center text-sm text-gray-500">
-        Not a member?
+        ยังไม่มีบัญชีผู้ใช้?
         {{ ' ' }}
-        <a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-          >Try to register here</a
+        <router-link
+          :to="{ name: 'register-view' }"
+          class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
         >
+          ลงทะเบียนที่นี่
+        </router-link>
       </p>
     </div>
   </div>
