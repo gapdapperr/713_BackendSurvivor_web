@@ -12,11 +12,21 @@ export interface Student {
     name: string
   }
   teacher?: {
+    id: number
     firstName: string
     lastName: string
     academicPosition: {
       title: string
     }
+  }
+}
+
+export interface Teacher {
+  id: number
+  firstName: string
+  lastName: string
+  academicPosition: {
+    title: string
   }
 }
 

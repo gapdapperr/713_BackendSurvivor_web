@@ -1,36 +1,47 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import type { Student } from '@/types'
+import { ref } from 'vue'
+import type { Student, Teacher } from '@/types'
+import TeacherService from '@/services/teacherService'
+import { useMessageStore } from '@/stores/message'
+import StudentService from '@/services/StudentService'
 
 // Explicitly define the props
-defineProps<{
+const props = defineProps<{
   students: Student[]
+  onRefresh: () => Promise<void>
 }>()
-// State for managing modal visibility and selected student/advisor
+
+// State management
 const isModalOpen = ref(false)
 const selectedStudent = ref<Student | null>(null)
 const selectedAdvisor = ref('')
+const availableAdvisors = ref<Teacher[]>([])
+const isLoading = ref(false)
+const messageStore = useMessageStore()
 
-// List of advisors
-const advisors = ['Dr. Smith', 'Dr. Johnson', 'Dr. Brown']
-
-// Function to handle opening the modal
-function openModal(student: Student) {
-  selectedStudent.value = student
-  // Set the initial value for the dropdown
-  if (student.teacher) {
-    selectedAdvisor.value = `${student.teacher.firstName} ${student.teacher.lastName}`
-  } else {
-    selectedAdvisor.value = ''
+// Function to fetch advisors by department
+async function fetchAdvisors(departmentId: number) {
+  try {
+    isLoading.value = true
+    const response = await TeacherService.getTeacherByDepartmentId(departmentId)
+    availableAdvisors.value = response.data
+  } catch (error) {
+    messageStore.updateMessage('ไม่สามารถโหลดรายชื่ออาจารย์ได้')
+    console.error('Error fetching advisors:', error)
+  } finally {
+    isLoading.value = false
   }
-  isModalOpen.value = true
 }
 
-// Add a computed property for teacher's full name
-const currentTeacherName = computed(() => {
-  if (!selectedStudent.value?.teacher) return ''
-  return `${selectedStudent.value.teacher.firstName} ${selectedStudent.value.teacher.lastName}`
-})
+// Function to handle opening the modal
+async function openModal(student: Student) {
+  selectedStudent.value = student
+  selectedAdvisor.value = student.teacher ? String(student.teacher.id) : ''
+  isModalOpen.value = true
+
+  // Fetch advisors when modal opens
+  await fetchAdvisors(student.department.id)
+}
 
 // Function to handle closing the modal
 function closeModal() {
@@ -40,12 +51,23 @@ function closeModal() {
 }
 
 // Function to handle advisor selection
-function handleSubmit() {
-  if (selectedAdvisor.value) {
-    console.log(
-      `Selected advisor "${selectedAdvisor.value}" for student ID: ${selectedStudent.value?.studentId}`,
-    )
-    closeModal()
+async function handleSubmit() {
+  if (selectedStudent.value && selectedAdvisor.value) {
+    try {
+      isLoading.value = true
+      await StudentService.updateTeacherId(
+        selectedStudent.value.studentId,
+        parseInt(selectedAdvisor.value),
+      )
+      messageStore.updateMessage('อัพเดทอาจารย์ที่ปรึกษาสำเร็จ')
+      await props.onRefresh()
+      closeModal()
+    } catch (error) {
+      console.error('Error updating advisor:', error)
+      messageStore.updateMessage('ไม่สามารถอัพเดทอาจารย์ที่ปรึกษาได้')
+    } finally {
+      isLoading.value = false
+    }
   }
 }
 </script>
@@ -174,28 +196,34 @@ function handleSubmit() {
                 <select
                   v-model="selectedAdvisor"
                   class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                  :disabled="isLoading"
                 >
                   <option value="" disabled>เลือกอาจารย์ที่ปรึกษา</option>
                   <option
-                    v-for="advisor in advisors"
-                    :key="advisor"
-                    :value="advisor"
-                    :selected="advisor === currentTeacherName"
+                    v-for="advisor in availableAdvisors"
+                    :key="advisor.id"
+                    :value="advisor.id"
                   >
-                    {{ advisor }}
+                    {{ advisor.firstName }}
+                    {{ advisor.lastName }}
                   </option>
                 </select>
+                <!-- Loading state -->
+                <div v-if="isLoading" class="mt-2 text-sm text-gray-500">
+                  กำลังโหลดรายชื่ออาจารย์...
+                </div>
               </div>
             </div>
           </div>
+          <!-- Modal actions -->
           <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse gap-2">
             <button
               type="button"
               @click="handleSubmit"
-              :disabled="!selectedAdvisor"
+              :disabled="!selectedAdvisor || isLoading"
               :class="[
                 'inline-flex justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors duration-200',
-                selectedAdvisor
+                selectedAdvisor && !isLoading
                   ? 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed',
               ]"

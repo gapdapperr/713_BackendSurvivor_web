@@ -59,6 +59,19 @@ const visiblePageNumbers = computed(() => {
   return pages
 })
 
+const fetchStudents = async () => {
+  try {
+    isLoading.value = true
+    const response = await StudentService.getStudents(page.value, pageSize, keyword.value)
+    students.value = response.data
+    totalStudents.value = response.headers['x-total-count']
+  } catch (error) {
+    router.push({ name: 'network-error-view' })
+  } finally {
+    isLoading.value = false
+  }
+}
+
 // Function to handle search
 async function handleSearch() {
   isLoading.value = true
@@ -131,7 +144,7 @@ watchEffect(() => {
     </div>
 
     <!-- Student Table -->
-    <StudentTable v-else :students="students" />
+    <StudentTable v-else :students="students" :onRefresh="fetchStudents" />
     <!-- Pagination Controls -->
     <div
       class="mt-6 flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
