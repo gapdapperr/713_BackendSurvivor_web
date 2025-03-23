@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
 import LandingView from '@/views/LandingView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
@@ -9,6 +10,7 @@ import StudentDashboardView from '@/views/dashboard-student/DashboardView.vue'
 import TeacherDashboardView from '@/views/dashboard-teacher/DashboardView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import NetworkErrorView from '@/views/NetworkErrorView.vue'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -127,6 +129,11 @@ const router = createRouter({
       name: 'not-found',
       component: NotFoundView,
     },
+    {
+      path: '/admin-teachers',
+      name: 'admin-teachers',
+      component: TeacherView,
+    }
   ],
 })
 
