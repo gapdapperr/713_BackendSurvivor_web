@@ -1,4 +1,4 @@
-import AdminDashboardView from '@/views/dashboard-admin/DashboardView.vue'
+import AdminDashboardView from '@/views/dashboard-admin/DashBoardView.vue'
 import StudentView from '@/views/dashboard-admin/student/StudentView.vue'
 import StudentDashboardView from '@/views/dashboard-student/DashboardView.vue'
 import TeacherDashboardView from '@/views/dashboard-teacher/DashboardView.vue'
