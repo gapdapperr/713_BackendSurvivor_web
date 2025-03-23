@@ -26,8 +26,7 @@ const dashboardItems = [
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-    <div class="container max-w-screen-lg text-center">
+  <div class="flex flex-col items-center mt-10">
     <h1 class="text-2xl font-bold mb-6">Admin Dashboard</h1>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div
@@ -44,5 +43,4 @@ const dashboardItems = [
       </div>
     </div>
   </div>
-</div>
 </template>
