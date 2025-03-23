@@ -12,4 +12,7 @@ export default {
       teacherId,
     })
   },
+  getAllStudentsByTeacherId(teacherId: number) {
+    return apiClient.get('/api/v1/students/teacher/' + teacherId)
+  }
 }

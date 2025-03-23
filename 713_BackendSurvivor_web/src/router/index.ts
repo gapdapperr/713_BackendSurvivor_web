@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import StudentView from '../views/admin/student/StudentView.vue'
+import TeacherView from '../views/admin/teacher/TeacherView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,6 +13,11 @@ const router = createRouter({
         page: parseInt(route.query.page as string) || 1,
       }),
     },
+    {
+      path: '/admin-teachers',
+      name: 'admin-teachers',
+      component: TeacherView,
+    }
   ],
 })
 
