@@ -119,7 +119,10 @@ async function handleSubmit() {
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex-shrink-0 relative w-10 h-10">
                 <img
-                  :src="student.user.profile"
+                  :src="
+                    student.user.profile ||
+                    'https://cnthruujnkkutwrqmslk.supabase.co/storage/v1/object/public/files/uploads/user.png'
+                  "
                   alt="Profile"
                   class="absolute inset-0 w-full h-full rounded-full object-cover border-2 border-gray-300 ring-2 ring-blue-500 ring-offset-2 ring-offset-white"
                 />

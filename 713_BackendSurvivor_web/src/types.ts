@@ -1,3 +1,10 @@
+export interface User {
+  id?: number
+  username: string
+  profile: string
+  role: string
+}
+
 export interface Student {
   id: number
   studentId: string
