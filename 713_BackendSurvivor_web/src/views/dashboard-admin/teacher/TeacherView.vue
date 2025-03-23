@@ -18,6 +18,7 @@ const router = useRouter()
 // Fetch teachers from the API
 const fetchTeachers = async () => {
   try {
+    console.log('Fetching teachers for page:', currentPage.value)
     isLoading.value = true
     const response = await TeacherService.getAllTeachers(currentPage.value, pageSize)
     teachers.value = response.data
@@ -35,13 +36,9 @@ watchEffect(() => {
   if (currentPage.value !== page) {
     currentPage.value = page
   }
+  console.log('Current Page:', currentPage.value)
   fetchTeachers()
 })
-
-// Update the URL when the page changes
-const updatePage = (page: number) => {
-  router.push({ name: route.name as string, query: { ...route.query, page } })
-}
 </script>
 
 <template>
@@ -75,8 +72,7 @@ const updatePage = (page: number) => {
       :currentPage="currentPage"
       :totalItems="totalTeachers"
       :pageSize="pageSize"
-      routeName="admin-teachers"
-      @update:currentPage="updatePage"
+      routeName="admin-teachers-view"
     />
   </div>
 </template>
