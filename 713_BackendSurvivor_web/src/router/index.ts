@@ -4,6 +4,7 @@ import LandingView from '@/views/LandingView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import StudentView from '@/views/dashboard-admin/student/StudentView.vue'
+import TeacherView from '@/views/dashboard-admin/teacher/TeacherView.vue'
 import TestPageView from '@/views/TestPageView.vue'
 import AdminDashboardView from '@/views/dashboard-admin/DashboardView.vue'
 import StudentDashboardView from '@/views/dashboard-student/DashboardView.vue'
@@ -42,7 +43,7 @@ const router = createRouter({
         {
           path: 'teachers',
           name: 'admin-teachers-view',
-          component: TestPageView,
+          component: TeacherView,
         },
         {
           path: 'students',
@@ -128,11 +129,6 @@ const router = createRouter({
       path: '/:catchAll(.*)',
       name: 'not-found',
       component: NotFoundView,
-    },
-    {
-      path: '/admin-teachers',
-      name: 'admin-teachers',
-      component: TeacherView,
     }
   ],
 })
