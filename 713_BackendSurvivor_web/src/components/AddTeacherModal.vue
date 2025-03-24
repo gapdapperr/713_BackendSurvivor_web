@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import type { Department, Position } from '@/types'
-import DepartmentService from '@/services/DepartmentService'
 import PositionService from '@/services/PositionService'
+import DepartmentService from '@/services/DepartmentService'
 import TeacherService from '@/services/teacherService'
+import { ref } from 'vue'
 
 const props = defineProps<{
-  onRefresh: () => Promise<void>
+  onRefresh: () => void
 }>()
 
-const isModalOpen = ref(false) // State for modal visibility
+// Modal visibility state
+const selectedFile = ref<File | null>(null)
+const showModal = ref(false)
 const newTeacher = ref({
   firstName: '',
   lastName: '',
@@ -18,11 +19,6 @@ const newTeacher = ref({
   username: '',
   password: '',
 })
-
-const availablePositions = ref<Position[]>([])
-const availableDepartments = ref<Department[]>([])
-
-const selectedFile = ref<File | null>(null)
 
 // Function to handle file selection
 function handleFileSelection(event: Event) {
@@ -34,15 +30,13 @@ function handleFileSelection(event: Event) {
 }
 
 // Function to open the modal
-async function openModal() {
-  isModalOpen.value = true
-  await fetchDepartments()
-  await fetchPositions()
+const openModal = () => {
+  showModal.value = true
 }
 
 // Function to close the modal
-function closeModal() {
-  isModalOpen.value = false
+const closeModal = () => {
+  showModal.value = false
   newTeacher.value = {
     firstName: '',
     lastName: '',
@@ -53,194 +47,175 @@ function closeModal() {
   }
 }
 
-// Function to fetch departments
-async function fetchDepartments() {
+async function AddTeacher() {
+  const teacherData = new FormData()
+  teacherData.append('firstName', newTeacher.value.firstName)
+  teacherData.append('lastName', newTeacher.value.lastName)
+  teacherData.append('academicPositionId', newTeacher.value.academicPositionId)
+  teacherData.append('departmentId', newTeacher.value.departmentId)
+  teacherData.append('username', newTeacher.value.username)
+  teacherData.append('password', newTeacher.value.password)
+  console.log(teacherData)
+  if (selectedFile.value) {
+    teacherData.append('profile', selectedFile.value) // Append the file
+  }
+
   try {
-    const response = await DepartmentService.getDepartments()
-    availableDepartments.value = response.data
+    const response = await TeacherService.addTeacher(teacherData)
+    console.log(response.data)
+    props.onRefresh()
+    closeModal()
   } catch (error) {
-    console.error(error)
+    console.log(error)
   }
 }
 
-// Function to fetch positions
+const availablePosition = ref()
+const availableDepartment = ref()
+
 async function fetchPositions() {
   try {
     const response = await PositionService.getPositions()
-    availablePositions.value = response.data
+    availablePosition.value = response.data
   } catch (error) {
-    console.error(error)
+    console.log(error)
   }
 }
 
-// Function to handle adding a new teacher
-async function handleAddTeacher() {
+async function fetchDepartments() {
   try {
-    const formData = new FormData()
-    formData.append('firstName', newTeacher.value.firstName)
-    formData.append('lastName', newTeacher.value.lastName)
-    formData.append('academicPositionId', newTeacher.value.academicPositionId)
-    formData.append('departmentId', newTeacher.value.departmentId)
-    formData.append('username', newTeacher.value.username)
-    formData.append('password', newTeacher.value.password)
-
-    if (selectedFile.value) {
-      formData.append('profile', selectedFile.value) // Append the file
-    }
-
-    await TeacherService.addTeacher(formData) // Send FormData
-    await props.onRefresh()
-    closeModal()
+    const response = await DepartmentService.getDepartments()
+    availableDepartment.value = response.data
   } catch (error) {
-    console.error(error)
+    console.log(error)
   }
 }
+
+fetchDepartments()
+fetchPositions()
 </script>
 
 <template>
   <div>
-    <!-- Add Teacher Button -->
-    <button
-      @click="openModal"
-      class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-    >
-      เพิ่มอาจารย์
-    </button>
+    <button @click="openModal">เพิ่มอาจารย์</button>
 
     <!-- Modal -->
-    <div
-      v-if="isModalOpen"
-      class="fixed inset-0 z-50 overflow-y-auto"
-      aria-labelledby="modal-title"
-      role="dialog"
-      aria-modal="true"
-    >
-      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-      <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-        <div
-          class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6"
-        >
-          <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">
-            Add New Teacher
-          </h3>
-          <div class="mt-4">
-            <label for="firstName" class="block text-sm font-medium text-gray-700"
-              >First Name</label
-            >
-            <input
-              v-model="newTeacher.firstName"
-              id="firstName"
-              type="text"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-            />
-            <label for="lastName" class="block text-sm font-medium text-gray-700 mt-4"
-              >Last Name</label
-            >
-            <input
-              v-model="newTeacher.lastName"
-              id="lastName"
-              type="text"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-            />
+    <div v-if="showModal" class="modal-overlay" @click="closeModal">
+      <div class="modal" @click.stop>
+        <h3>Add Teacher</h3>
+        <form @submit.prevent="closeModal">
+          <div>
+            <label for="firstName">firstName:</label>
+            <input v-model="newTeacher.firstName" type="text" id="firstName" required />
           </div>
-          <label for="academicPositionId" class="block text-sm font-medium text-gray-700 mt-4"
-            >Position</label
-          >
-          <select
-            v-model="newTeacher.academicPositionId"
-            id="academicPositionId"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-          >
-            <option value="" disabled>Select Position</option>
-            <option v-for="position in availablePositions" :key="position.id" :value="position.id">
-              {{ position.title }}
-            </option>
-          </select>
-
-          <label for="departmentId" class="block text-sm font-medium text-gray-700 mt-4"
-            >Department</label
-          >
-          <select
-            v-model="newTeacher.departmentId"
-            id="departmentId"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-          >
-            <option value="" disabled>Select Department</option>
-            <option
-              v-for="department in availableDepartments"
-              :key="department.id"
-              :value="department.id"
-            >
-              {{ department.name }}
-            </option>
-            <option
-              v-for="department in availableDepartments"
-              :key="department.id"
-              :value="department.id"
-            >
-              {{ department.name }}
-            </option>
-          </select>
-          <label for="username" class="block text-sm font-medium text-gray-700 mt-4"
-            >Username</label
-          >
-          <input
-            v-model="newTeacher.username"
-            id="username"
-            type="text"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-          />
-          <label for="password" class="block text-sm font-medium text-gray-700 mt-4"
-            >Password</label
-          >
-          <input
-            v-model="newTeacher.password"
-            id="password"
-            type="text"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-          />
-          <div class="mt-4">
-            <label for="profile" class="block text-sm font-medium text-gray-700"
-              >Profile Picture</label
-            >
-            <div class="flex items-center gap-4">
-              <!-- Hidden file input -->
-              <input
-                type="file"
-                id="profile"
-                name="profile"
-                accept="image/*"
-                class="hidden"
-                @change="handleFileSelection"
-              />
-              <!-- Label styled as a button -->
-              <label
-                for="profile"
-                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer"
+          <div>
+            <label for="lastName">lastName:</label>
+            <input v-model="newTeacher.lastName" type="text" id="lastName" required />
+          </div>
+          <div>
+            <label for="position">Academic Position:</label>
+            <select v-model="newTeacher.academicPositionId" name="position" id="position">
+              <option value="" disabled>Please select position</option>
+              <option v-for="position in availablePosition" :key="position.id" :value="position.id">
+                {{ position.title }}
+              </option>
+            </select>
+          </div>
+          <div>
+            <label for="department">Department:</label>
+            <select v-model="newTeacher.departmentId" name="department" id="department">
+              <option value="" disabled>Please select department</option>
+              <option
+                v-for="department in availableDepartment"
+                :key="department.id"
+                :value="department.id"
               >
-                Browse File
-              </label>
-              <!-- Display selected file name -->
-              <span v-if="selectedFile" class="text-sm text-gray-500">{{ selectedFile.name }}</span>
-            </div>
+                {{ department.name }}
+              </option>
+            </select>
           </div>
-          <!-- Submit and Cancel Buttons -->
-          <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse gap-2">
-            <button
-              @click="handleAddTeacher"
-              class="inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Submit
-            </button>
-            <button
-              @click="closeModal"
-              class="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Cancel
-            </button>
+          <div>
+            <label for="username">Username:</label>
+            <input v-model="newTeacher.username" type="text" id="username" required />
           </div>
-        </div>
+          <div>
+            <label for="password">Password:</label>
+            <input v-model="newTeacher.password" type="text" id="password" required />
+          </div>
+          <div>
+  <label for="profile" class="upload-btn">Upload Profile Picture</label>
+  <input type="file" id="profile" name="filename" style="display: none" accept="image/*" onchange="this.nextElementSibling.textContent = this.files[0]?.name || ''" />
+  <span class="file-name"></span>
+</div>
+
+          <div>
+            <button type="submit" @click="AddTeacher">Submit</button>
+            <button type="button" @click="closeModal">Cancel</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Basic styling for the modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+}
+
+.modal form {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal form div {
+  margin-bottom: 10px;
+}
+
+button {
+  margin: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+button[type='submit'] {
+  background-color: #4caf50;
+  color: white;
+}
+
+button[type='button'] {
+  background-color: #f44336;
+  color: white;
+}
+
+/* Style the file upload button */
+.upload-btn {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.upload-btn:hover {
+  background-color: #45a049;
+}
+</style>

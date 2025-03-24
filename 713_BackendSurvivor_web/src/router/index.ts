@@ -44,6 +44,9 @@ const router = createRouter({
           path: 'teachers',
           name: 'admin-teachers-view',
           component: TeacherView,
+          props: (route) => ({
+            page: parseInt(route.query.page as string) || 1,
+          }),
         },
         {
           path: 'students',
