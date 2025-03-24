@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Teacher } from '@/types'
-import StudentByTeacher from './StudentByTeacher.vue'
+import StudentByTeacherModal from './StudentByTeacherModal.vue';
 import EditTeacherModal from './EditTeacherModal.vue'
 
 
@@ -30,12 +30,12 @@ const props = defineProps<{
     </thead>
     <tbody>
       <tr v-for="teacher in props.teachers" :key="teacher.id">
-        <td>{{ teacher.user.profile }}</td>
+        <td><img :src="teacher.user.profile || 'https://cnthruujnkkutwrqmslk.supabase.co/storage/v1/object/public/files/uploads/user.png'" alt=""></td>
         <td>{{ teacher.firstName + ' ' + teacher.lastName }}</td>
         <td>{{ teacher.academicPosition.title }}</td>
         <td>{{ teacher.department.name }}</td>
         <td>{{ teacher._count?.students }}</td>
-        <td><StudentByTeacher :teacherId="teacher.id" /></td>
+        <td><StudentByTeacherModal :teacherId="teacher.id" /></td>
         <td><EditTeacherModal :Teacher="teacher" :onRefresh="props.onRefresh"/></td>
       </tr>
     </tbody>

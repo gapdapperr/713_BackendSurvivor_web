@@ -1,86 +1,109 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watchEffect } from 'vue'
 import StudentService from '@/services/StudentService'
-import type { Student } from '@/types'
 
-const props = defineProps<{
-  teacherId: number | null
-  isOpen: boolean
-  onClose: () => void
-}>()
+const students = ref() // Define the students array
+const props = defineProps<{ teacherId: number }>()  // Define the teacherId prop
 
-const students = ref<Student[]>([])
-const isLoading = ref(false)
 
-// Fetch students when the modal is opened
-watch(
-  () => props.teacherId,
-  async (newTeacherId) => {
-    if (newTeacherId !== null) {
-      await fetchStudents(newTeacherId)
-    }
-  }
-)
+const showModal = ref(false)  // Modal visibility state
 
-// Function to fetch students for a specific teacher
-async function fetchStudents(teacherId: number) {
-  try {
-    isLoading.value = true
-    const response = await StudentService.getAllStudentsByTeacherId(teacherId)
-    students.value = response.data
-  } catch (error) {
-    console.error('Error fetching students:', error)
-  } finally {
-    isLoading.value = false
-  }
+// Fetch students data from the service
+async function fetchStudents() {
+try {
+  const response = await StudentService.getAllStudentsByTeacherId(props.teacherId)
+  students.value = response.data
+} catch (error) {
+  console.log(error)
+}
 }
 
-// Function to handle modal close
-function handleClose() {
-  students.value = [] // Clear the students array
-  props.onClose() // Call the parent-provided onClose handler
+
+
+const openModal = () => {
+  showModal.value = true
+    fetchStudents()
 }
+
+const closeModal = () => {
+  showModal.value = false
+  students.value = null
+}
+
 </script>
-<template>
-  <div
-    v-if="isOpen"
-    class="fixed inset-0 z-50 overflow-y-auto"
-    aria-labelledby="modal-title"
-    role="dialog"
-    aria-modal="true"
-  >
-    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-      <div
-        class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6"
-      >
-        <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">
-          Students List
-        </h3>
-        <div class="mt-4">
-          <div v-if="isLoading" class="text-gray-500">Loading students...</div>
-          <ul v-else>
-            <li
-              v-for="student in students"
-              :key="student.id"
-              class="text-sm text-gray-700"
-            >
-              {{ student.firstName }} {{ student.lastName }}
-            </li>
-            <li v-if="students.length === 0" class="text-gray-500">No students found.
 
-            </li>
-          </ul>
-        </div>
-        <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-          <button
-            @click="handleClose"
-            class="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            Close
-          </button>
-        </div>
+<template>
+  <div>
+    <!-- Button to open the modal -->
+    <button @click="openModal">ดูนักศึกษา</button>
+
+    <!-- Modal -->
+    <div v-if="showModal" class="modal-overlay" @click="openModal">
+      <div class="modal" @click.stop>
+        <h3>Student List</h3>
+        <table v-if="students">
+            <thead>
+                <th></th>
+                <th>Name</th>
+            </thead>
+            <tbody>
+                <tr v-for="student in students" :key="student.id">
+                    <td><img :src="student.user.profile || 'https://cnthruujnkkutwrqmslk.supabase.co/storage/v1/object/public/files/uploads/user.png'" alt=""></td>
+                    <td>{{ student.firstName }} {{ student.lastName }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <h1 v-else>No Student Found</h1>
+        <button @click="closeModal">Close</button>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Modal overlay styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Modal window styling */
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.modal ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.modal li {
+  margin: 10px 0;
+}
+
+button {
+  margin-top: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+</style>
