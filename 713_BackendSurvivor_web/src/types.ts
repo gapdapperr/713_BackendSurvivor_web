@@ -75,6 +75,7 @@ export interface Teacher {
 
 export interface MessageState {
   message: string
+  type?: 'success' | 'error' | 'info'
 }
 
 export interface Department {
@@ -94,13 +95,18 @@ export interface Comment {
       title: string
     }
   }
-  student: {
+  student?: {
     studentId: string
     firstName: string
     lastName: string
     department: {
       name: string
     }
+  }
+  user?: {
+    id: number
+    username: string
+    role: string
   }
   replies: Comment[]
 }

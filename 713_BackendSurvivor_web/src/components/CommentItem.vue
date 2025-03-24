@@ -1,116 +1,109 @@
 <script setup lang="ts">
-import type { Comment } from '@/types'
 import { ref } from 'vue'
+import type { Comment } from '@/types'
+import ReplyForm from './ReplyForm.vue'
+import { format } from 'date-fns'
+import { th } from 'date-fns/locale'
 
-const props = defineProps<{
-  comment: Comment
-  formatDate: (date: string) => string
-  activeReplyId: number | null
-}>()
+const props = defineProps<{ comment: Comment }>()
+const showReplyForm = ref(false)
 
 const emit = defineEmits<{
-  (e: 'reply', commentId: number | null): void
-  (e: 'submitReply', payload: { commentId: number; content: string }): void
+  (e: 'reply', payload: { commentId: number; content: string }): void
 }>()
 
-const toggleReply = (activeReplyId: number | null, commentId: number) => {
-  emit('reply', activeReplyId === commentId ? null : commentId)
+const handleReply = (content: string) => {
+  emit('reply', { commentId: props.comment.id, content })
+  showReplyForm.value = false
 }
 
-// local state for reply form
-const replyContent = ref('')
-const isSubmitting = ref(false)
+const formatDate = (date: string) => {
+  return format(new Date(date), 'PPp', { locale: th })
+}
 
-const handleSubmitReply = () => {
-  if (!replyContent.value.trim()) return
-  emit('submitReply', {
-    commentId: props.comment.id,
-    content: replyContent.value,
-  })
-  replyContent.value = ''
+// function for role checking
+const isTeacher = (reply: Comment) => reply.user?.role === 'ROLE_TEACHER'
+
+// function for getting display name
+const getDisplayName = (reply: Comment) => {
+  if (isTeacher(reply) && reply.teacher) {
+    return `${reply.teacher.firstName} ${reply.teacher.lastName}`
+  }
+  if (reply.student) {
+    return `${reply.student.firstName} ${reply.student.lastName}`
+  }
+  return 'Unknown User'
 }
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow-md overflow-hidden">
-    <!-- Main Comment -->
-    <div class="p-6 border-l-4 border-indigo-500">
+  <div class="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-md">
+    <!-- Comment Section -->
+    <div class="p-4">
       <!-- Comment Header -->
-      <div class="mb-4">
-        <div class="flex items-center justify-between">
-          <div class="space-y-1">
-            <h4 class="font-medium text-gray-900 flex items-center">
-              <span class="text-lg"
-                >{{ comment.teacher.firstName }} {{ comment.teacher.lastName }}</span
-              >
-              <span
-                class="ml-2 text-xs px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full font-semibold"
-              >
-                อาจารย์
-              </span>
-            </h4>
-            <p class="text-sm text-gray-500">{{ formatDate(comment.createdAt) }}</p>
-          </div>
-        </div>
+      <div class="flex items-center gap-2 mb-2">
+        <span class="font-medium"
+          >{{ comment.teacher.firstName }} {{ comment.teacher.lastName }}</span
+        >
+        <span class="text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded-full">อาจารย์</span>
+        <span class="text-sm text-gray-500">
+          {{ formatDate(comment.createdAt) }}
+        </span>
       </div>
 
       <!-- Comment Content -->
-      <div class="text-gray-700 bg-indigo-50/50 p-4 rounded-lg">
+      <div class="text-gray-700 bg-gray-50 p-3 rounded-md">
         {{ comment.content }}
       </div>
     </div>
 
-    <slot name="replies"></slot>
-
-    <!-- Reply Section -->
-    <div class="border-t border-gray-100">
-      <!-- Reply Button -->
-      <div class="px-6 py-3 bg-gray-50">
-        <button
-          @click="toggleReply(activeReplyId, comment.id)"
-          class="inline-flex items-center text-sm text-indigo-600 hover:text-indigo-800 font-medium"
-        >
-          <svg
-            v-if="activeReplyId !== comment.id"
-            class="w-4 h-4 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
-            />
-          </svg>
-          {{ activeReplyId === comment.id ? 'ยกเลิก' : 'ตอบกลับ' }}
-        </button>
-      </div>
-
-      <!-- Reply Form -->
+    <!-- Replies Section -->
+    <div v-if="comment.replies?.length" class="border-t border-gray-100">
       <div
-        v-if="activeReplyId === comment.id"
-        class="px-6 py-4 bg-gray-50 border-t border-gray-100"
+        v-for="reply in comment.replies"
+        :key="reply.id"
+        class="p-4 pl-8"
+        :class="isTeacher(reply) ? 'bg-blue-50/50' : 'bg-gray-50'"
       >
-        <form @submit.prevent="handleSubmitReply" class="space-y-4">
-          <textarea
-            v-model="replyContent"
-            rows="2"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            placeholder="ตอบกลับความคิดเห็น..."
-          ></textarea>
-          <div class="flex justify-end space-x-3">
-            <button
-              type="submit"
-              :disabled="isSubmitting || !replyContent.trim()"
-              class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {{ isSubmitting ? 'กำลังบันทึก...' : 'ส่งการตอบกลับ' }}
-            </button>
-          </div>
-        </form>
+        <!-- Reply Header -->
+        <div class="flex items-center gap-2 mb-2">
+          <!-- User Name -->
+          <span class="font-medium">{{ getDisplayName(reply) }}</span>
+
+          <!-- Role Badge -->
+          <span
+            class="text-xs px-2 py-1 rounded-full"
+            :class="isTeacher(reply) ? 'bg-blue-50 text-blue-600' : 'bg-gray-200 text-gray-600'"
+          >
+            {{ isTeacher(reply) ? 'อาจารย์' : 'นักศึกษา' }}
+          </span>
+
+          <!-- Date -->
+          <span class="text-sm text-gray-500">
+            {{ formatDate(reply.createdAt) }}
+          </span>
+        </div>
+
+        <!-- Reply Content -->
+        <div
+          class="text-gray-700 p-3 rounded-md border border-gray-100"
+          :class="isTeacher(reply) ? 'bg-white' : 'bg-white'"
+        >
+          {{ reply.content }}
+        </div>
       </div>
+    </div>
+
+    <!-- Reply Controls -->
+    <div class="p-4 border-t border-gray-100">
+      <button
+        v-if="!showReplyForm"
+        @click="showReplyForm = true"
+        class="text-blue-600 hover:text-blue-700 text-sm font-medium"
+      >
+        + ตอบกลับ
+      </button>
+      <ReplyForm v-else @submit="handleReply" @cancel="showReplyForm = false" />
     </div>
   </div>
 </template>
