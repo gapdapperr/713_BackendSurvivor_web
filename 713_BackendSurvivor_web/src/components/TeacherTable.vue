@@ -15,31 +15,87 @@ const props = defineProps<{
 </script>
 
 <template>
-  <!-- Teacher List Table -->
-  <table>
-    <thead>
-      <tr>
-        <th></th>
-        <th>Name</th>
-        <th>Position</th>
-        <th>Department</th>
-        <th>Number of Students</th>
-        <th></th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="teacher in props.teachers" :key="teacher.id">
-        <td><img :src="teacher.user.profile || 'https://cnthruujnkkutwrqmslk.supabase.co/storage/v1/object/public/files/uploads/user.png'" alt=""></td>
-        <td>{{ teacher.firstName + ' ' + teacher.lastName }}</td>
-        <td>{{ teacher.academicPosition.title }}</td>
-        <td>{{ teacher.department.name }}</td>
-        <td>{{ teacher._count?.students }}</td>
-        <td><StudentByTeacherModal :teacherId="teacher.id" /></td>
-        <td><EditTeacherModal :Teacher="teacher" :onRefresh="props.onRefresh"/></td>
-      </tr>
-    </tbody>
-  </table>
+  <!-- Main container with shadow and rounded corners -->
+  <div class="bg-white rounded-lg shadow-lg border border-gray-200">
+    <!-- Table wrapper with overflow handling -->
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <!-- Table header -->
+        <thead class="bg-gray-50">
+          <tr>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            ></th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Name
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Position
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Department
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Number of Students
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            ></th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            ></th>
+          </tr>
+        </thead>
+        <!-- Table body -->
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr
+            v-for="teacher in props.teachers"
+            :key="teacher.id"
+            class="hover:bg-gray-50 transition-colors duration-200"
+          >
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex-shrink-0 relative w-10 h-10">
+                <img
+                  :src="
+                    teacher.user.profile ||
+                    'https://cnthruujnkkutwrqmslk.supabase.co/storage/v1/object/public/files/uploads/user.png'
+                  "
+                  alt="Profile"
+                  class="absolute inset-0 w-full h-full rounded-full object-cover border-2 border-gray-300 ring-2 ring-blue-500 ring-offset-2 ring-offset-white"
+                />
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              {{ teacher.firstName }} {{ teacher.lastName }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              {{ teacher.academicPosition.title }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              {{ teacher.department.name }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              {{ teacher._count?.students || 0 }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <StudentByTeacherModal :teacherId="teacher.id" />
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <EditTeacherModal :Teacher="teacher" :onRefresh="props.onRefresh" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </template>
 
 <style scoped>

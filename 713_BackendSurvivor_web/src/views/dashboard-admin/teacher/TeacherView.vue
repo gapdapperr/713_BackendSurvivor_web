@@ -39,32 +39,39 @@ watchEffect(() => {
 </script>
 
 <template>
-  <p>Teacher Management</p>
+  <div class="dashboard p-6 bg-gray-50 min-h-screen">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">จัดการข้อมูลอาจารย์</h2>
 
-  <AddTeacherModal :onRefresh="fetchTeachers" />
+    <!-- Add Teacher Modal -->
+    <div class="mb-6">
+      <AddTeacherModal :onRefresh="fetchTeachers" />
+    </div>
 
-  <!-- Loading Skeleton -->
-  <div v-if="isLoading" class="space-y-4">
-    <div v-for="n in 3" :key="n" class="bg-white rounded-lg shadow-sm p-4 animate-pulse">
-      <div class="flex items-center space-x-4">
-        <div class="h-12 w-12 bg-gray-200 rounded-full"></div>
-        <div class="flex-1 space-y-2">
-          <div class="h-4 bg-gray-200 rounded w-1/4"></div>
-          <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+    <!-- Loading Skeleton -->
+    <div v-if="isLoading" class="space-y-4">
+      <div v-for="n in 3" :key="n" class="bg-white rounded-lg shadow-sm p-4 animate-pulse">
+        <div class="flex items-center space-x-4">
+          <div class="h-12 w-12 bg-gray-200 rounded-full"></div>
+          <div class="flex-1 space-y-2">
+            <div class="h-4 bg-gray-200 rounded w-1/4"></div>
+            <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+          </div>
+          <div class="h-8 w-24 bg-gray-200 rounded"></div>
         </div>
-        <div class="h-8 w-24 bg-gray-200 rounded"></div>
       </div>
     </div>
+
+    <!-- Teacher Table -->
+    <TeacherTable v-else :teachers="teachers" :onRefresh="fetchTeachers" />
+
+    <!-- Pagination -->
+    <Pagination
+      :currentPage="page"
+      :totalItems="totalTeachers"
+      :pageSize="pageSize"
+      routeName="admin-teachers-view"
+    />
   </div>
-
-  <TeacherTable :teachers="teachers" :onRefresh="fetchTeachers" />
-
-  <Pagination
-    :currentPage="page"
-    :totalItems="totalTeachers"
-    :pageSize="pageSize"
-    routeName="admin-teachers-view"
-  />
 </template>
 
 <style scoped>

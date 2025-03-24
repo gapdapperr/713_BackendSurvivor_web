@@ -75,34 +75,61 @@ const saveChanges = async () => {
 <template>
   <div>
     <!-- Edit Button -->
-    <button @click="openModal">แก้ไข</button>
+    <button
+      @click="openModal"
+      class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+    >
+      แก้ไข
+    </button>
 
     <!-- Modal -->
     <div v-if="showModal" class="modal-overlay" @click="closeModal">
       <div class="modal" @click.stop>
-        <h3>Edit Teacher Profile</h3>
+        <h3 class="text-lg font-bold text-gray-800 mb-4">แก้ไขข้อมูลอาจารย์</h3>
         <form @submit.prevent="saveChanges">
-          <div>
-            <label for="firstName">First Name:</label>
-            <input v-model="firstName" type="text" id="firstName" required />
+          <div class="mb-4">
+            <label for="firstName" class="block text-sm font-medium text-gray-700">ชื่อ:</label>
+            <input
+              v-model="firstName"
+              type="text"
+              id="firstName"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              required
+            />
           </div>
-          <div>
-            <label for="lastName">Last Name:</label>
-            <input v-model="lastName" type="text" id="lastName" required />
+          <div class="mb-4">
+            <label for="lastName" class="block text-sm font-medium text-gray-700">นามสกุล:</label>
+            <input
+              v-model="lastName"
+              type="text"
+              id="lastName"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              required
+            />
           </div>
-          <div>
-            <label for="position">Academic Position:</label>
-            <select v-model="academicPosition" name="academicPosition" id="academicPosition">
-              <option value="" disabled>Please select position</option>
+          <div class="mb-4">
+            <label for="position" class="block text-sm font-medium text-gray-700">ตำแหน่ง:</label>
+            <select
+              v-model="academicPosition"
+              id="position"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              required
+            >
+              <option value="" disabled>กรุณาเลือกตำแหน่ง</option>
               <option v-for="position in availablePosition" :key="position.id" :value="position.id">
                 {{ position.title }}
               </option>
             </select>
           </div>
-          <div>
-            <label for="department">Department:</label>
-            <select v-model="department" name="department" id="department">
-              <option value="" disabled>Please select department</option>
+          <div class="mb-4">
+            <label for="department" class="block text-sm font-medium text-gray-700">แผนก:</label>
+            <select
+              v-model="department"
+              id="department"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              required
+            >
+              <option value="" disabled>กรุณาเลือกแผนก</option>
               <option
                 v-for="department in availableDepartment"
                 :key="department.id"
@@ -112,9 +139,20 @@ const saveChanges = async () => {
               </option>
             </select>
           </div>
-          <div>
-            <button type="submit">Save Changes</button>
-            <button type="button" @click="closeModal">Cancel</button>
+          <div class="flex justify-end space-x-4">
+            <button
+              type="button"
+              @click="closeModal"
+              class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+            >
+              ยกเลิก
+            </button>
+            <button
+              type="submit"
+              class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              บันทึก
+            </button>
           </div>
         </form>
       </div>
@@ -123,7 +161,6 @@ const saveChanges = async () => {
 </template>
 
 <style scoped>
-/* Basic styling for the modal */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -134,37 +171,18 @@ const saveChanges = async () => {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 50;
 }
 
 .modal {
   background: white;
   padding: 20px;
   border-radius: 8px;
-  width: 300px;
-}
-
-.modal form {
-  display: flex;
-  flex-direction: column;
-}
-
-.modal form div {
-  margin-bottom: 10px;
+  width: 400px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 button {
-  margin: 5px;
-  padding: 8px 12px;
-  cursor: pointer;
-}
-
-button[type='submit'] {
-  background-color: #4caf50;
-  color: white;
-}
-
-button[type='button'] {
-  background-color: #f44336;
-  color: white;
+  transition: background-color 0.2s ease-in-out;
 }
 </style>
