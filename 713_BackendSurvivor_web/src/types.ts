@@ -60,6 +60,10 @@ export interface Student {
   }
 }
 
+export interface StudentState {
+  student: Student | null
+}
+
 export interface Teacher {
   id: number
   firstName: string
@@ -77,3 +81,28 @@ export interface Department {
   id: number
   name: string
 }
+
+export interface Comment {
+  id: number
+  content: string
+  createdAt: string
+  teacher: {
+    id: number
+    firstName: string
+    lastName: string
+    academicPosition: {
+      title: string
+    }
+  }
+  student: {
+    studentId: string
+    firstName: string
+    lastName: string
+    department: {
+      name: string
+    }
+  }
+  replies: Comment[]
+}
+
+// Add Vue Router type augmentation

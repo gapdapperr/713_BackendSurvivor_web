@@ -8,10 +8,13 @@ import AdminDashboardView from '@/views/dashboard-admin/DashboardView.vue'
 import StudentDashboardView from '@/views/dashboard-student/DashboardView.vue'
 import TeacherDashboardView from '@/views/dashboard-teacher/DashboardView.vue'
 import TeacherStudentView from '@/views/dashboard-teacher/student/StudentView.vue'
+import TeacherCommentView from '@/views/dashboard-teacher/student/comment/CommentView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import NetworkErrorView from '@/views/NetworkErrorView.vue'
 import UnauthorizedView from '@/views/UnauthorizedView.vue'
 import { useAuthStore } from '@/stores/auth'
+import { useStudentStore } from '@/stores/student'
+import StudentService from '@/services/StudentService'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -73,6 +76,31 @@ const router = createRouter({
           path: 'students',
           name: 'teacher-students-view',
           component: TeacherStudentView,
+        },
+        {
+          path: 'students/:studentId/comments',
+          name: 'teacher-student-comments-view',
+          component: TeacherCommentView,
+          props: true,
+          beforeEnter: (to) => {
+            const id = to.params.studentId as string
+            const studentStore = useStudentStore()
+            return StudentService.getStudentByStudentId(id)
+              .then((response) => {
+                // need to setup the data for the event
+                studentStore.setStudent(response.data)
+              })
+              .catch((error) => {
+                if (error.response && error.response.status === 404) {
+                  return {
+                    name: '404-resource-view',
+                    params: { resource: 'student' },
+                  }
+                } else {
+                  return { name: 'network-error-view' }
+                }
+              })
+          },
         },
         {
           path: 'announcements',

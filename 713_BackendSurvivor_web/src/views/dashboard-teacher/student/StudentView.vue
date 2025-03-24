@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import StudentTeacherTable from '@/components/StudentTeacherTable.vue'
+import StudentCard from '@/components/StudentCard.vue'
 import StudentService from '@/services/StudentService'
 import type { Student } from '@/types'
 import { useRouter } from 'vue-router'
@@ -59,8 +59,10 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Student Table -->
-    <StudentTeacherTable v-else :students="students" :onRefresh="fetchStudents" />
+    <!-- Student Cards Grid -->
+    <div v-else class="grid gap-4 max-w-4xl mx-auto">
+      <StudentCard v-for="student in students" :key="student.id" :student="student" />
+    </div>
   </div>
 </template>
 
