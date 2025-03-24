@@ -1,9 +1,7 @@
 <script setup>
-import { RouterLink } from 'vue-router';
-
 
 const dashboardItems = [
-  
+
   {
     title: "จัดการอาจารย์",
     description: "เพิ่ม และปรับปรุงข้อมูลอาจารย์",
