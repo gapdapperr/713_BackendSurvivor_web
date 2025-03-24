@@ -147,7 +147,7 @@ router.beforeEach((to, from, next) => {
   }
 
   // ตรวจสอบ role ว่าตรงกับที่กำหนดใน meta หรือไม่
-  if (to.meta.role && !authStore.user?.role.includes(to.meta.role)) {
+  if (to.meta.role && !authStore.user?.role.includes(to.meta.role as string)) {
     // ถ้า role ไม่ตรง ให้ไปหน้า unauthorized หรือ redirect กลับ
     next({ name: 'unauthorized-view' })
     return
