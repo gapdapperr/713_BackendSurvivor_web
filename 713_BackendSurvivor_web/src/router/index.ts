@@ -7,8 +7,11 @@ import TestPageView from '@/views/TestPageView.vue'
 import AdminDashboardView from '@/views/dashboard-admin/DashboardView.vue'
 import StudentDashboardView from '@/views/dashboard-student/DashboardView.vue'
 import TeacherDashboardView from '@/views/dashboard-teacher/DashboardView.vue'
+import TeacherStudentView from '@/views/dashboard-teacher/student/StudentView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import NetworkErrorView from '@/views/NetworkErrorView.vue'
+import UnauthorizedView from '@/views/UnauthorizedView.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -69,7 +72,7 @@ const router = createRouter({
         {
           path: 'students',
           name: 'teacher-students-view',
-          component: TestPageView,
+          component: TeacherStudentView,
         },
         {
           path: 'announcements',
@@ -110,11 +113,15 @@ const router = createRouter({
       ],
     },
     {
+      path: '/unauthorized',
+      name: 'unauthorized-view',
+      component: UnauthorizedView,
+    },
+    {
       path: '/network-error',
       name: 'network-error-view',
       component: NetworkErrorView,
     },
-
     {
       path: '/404/:resource',
       name: '404-resource-view',
@@ -128,6 +135,26 @@ const router = createRouter({
       component: NotFoundView,
     },
   ],
+})
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
+
+  // ตรวจสอบว่า route ต้องการ authentication หรือไม่
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    // ถ้าไม่ได้ login ให้ไปหน้า login
+    next({ name: 'login-view' })
+    return
+  }
+
+  // ตรวจสอบ role ว่าตรงกับที่กำหนดใน meta หรือไม่
+  if (to.meta.role && !authStore.user?.role.includes(to.meta.role)) {
+    // ถ้า role ไม่ตรง ให้ไปหน้า unauthorized หรือ redirect กลับ
+    next({ name: 'unauthorized-view' })
+    return
+  }
+
+  // ถ้าผ่านการตรวจสอบทั้งหมด
+  next()
 })
 
 export default router

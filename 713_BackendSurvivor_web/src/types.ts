@@ -1,8 +1,40 @@
 export interface User {
-  id?: number
+  id: number
   username: string
-  profile: string
   role: string
+  profile: string
+  teacher?: {
+    id: number
+    firstName: string
+    lastName: string
+    department: {
+      id: number
+      name: string
+    }
+    academicPosition: {
+      id: number
+      title: string
+    }
+  }
+  student?: {
+    id: number
+    studentId: string
+    firstName: string
+    lastName: string
+    department: {
+      id: number
+      name: string
+    }
+    teacher?: {
+      id: number
+      firstName: string
+      lastName: string
+      academicPosition: {
+        id: number
+        title: string
+      }
+    }
+  }
 }
 
 export interface Student {

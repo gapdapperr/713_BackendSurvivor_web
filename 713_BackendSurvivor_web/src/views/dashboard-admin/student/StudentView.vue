@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watchEffect } from 'vue'
-import StudentTable from '@/components/StudentTable.vue'
+import StudentAdminTable from '@/components/StudentAdminTable.vue'
 import StudentService from '@/services/StudentService'
 import type { Student } from '@/types'
 import { useRouter } from 'vue-router'
@@ -109,7 +109,7 @@ watchEffect(() => {
     </div>
 
     <!-- Student Table -->
-    <StudentTable v-else :students="students" :onRefresh="fetchStudents" />
+    <StudentAdminTable v-else :students="students" :onRefresh="fetchStudents" />
 
     <!-- Pagination -->
     <Pagination
