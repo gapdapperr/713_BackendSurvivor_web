@@ -1,86 +1,127 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watchEffect } from 'vue'
 import StudentService from '@/services/StudentService'
-import type { Student } from '@/types'
 
-const props = defineProps<{
-  teacherId: number | null
-  isOpen: boolean
-  onClose: () => void
-}>()
+const students = ref() // Define the students array
+const props = defineProps<{ teacherId: number }>()  // Define the teacherId prop
 
-const students = ref<Student[]>([])
-const isLoading = ref(false)
 
-// Fetch students when the modal is opened
-watch(
-  () => props.teacherId,
-  async (newTeacherId) => {
-    if (newTeacherId !== null) {
-      await fetchStudents(newTeacherId)
-    }
-  }
-)
+const showModal = ref(false)  // Modal visibility state
 
-// Function to fetch students for a specific teacher
-async function fetchStudents(teacherId: number) {
-  try {
-    isLoading.value = true
-    const response = await StudentService.getAllStudentsByTeacherId(teacherId)
-    students.value = response.data
-  } catch (error) {
-    console.error('Error fetching students:', error)
-  } finally {
-    isLoading.value = false
-  }
+// Fetch students data from the service
+async function fetchStudents() {
+try {
+  const response = await StudentService.getAllStudentsByTeacherId(props.teacherId)
+  students.value = response.data
+} catch (error) {
+  console.log(error)
+}
 }
 
-// Function to handle modal close
-function handleClose() {
-  students.value = [] // Clear the students array
-  props.onClose() // Call the parent-provided onClose handler
+
+
+const openModal = () => {
+  showModal.value = true
+    fetchStudents()
 }
+
+const closeModal = () => {
+  showModal.value = false
+  students.value = null
+}
+
 </script>
-<template>
-  <div
-    v-if="isOpen"
-    class="fixed inset-0 z-50 overflow-y-auto"
-    aria-labelledby="modal-title"
-    role="dialog"
-    aria-modal="true"
-  >
-    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-      <div
-        class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6"
-      >
-        <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">
-          Students List
-        </h3>
-        <div class="mt-4">
-          <div v-if="isLoading" class="text-gray-500">Loading students...</div>
-          <ul v-else>
-            <li
-              v-for="student in students"
-              :key="student.id"
-              class="text-sm text-gray-700"
-            >
-              {{ student.firstName }} {{ student.lastName }}
-            </li>
-            <li v-if="students.length === 0" class="text-gray-500">No students found.
 
-            </li>
-          </ul>
+<template>
+  <div>
+    <!-- Button to open the modal -->
+    <button
+      @click="openModal"
+      class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+    >
+      ดูนักศึกษา
+    </button>
+
+    <!-- Modal -->
+    <div v-if="showModal" class="modal-overlay" @click="closeModal">
+      <div class="modal" @click.stop>
+        <h3 class="text-lg font-bold text-gray-800 mb-4">รายชื่อนักศึกษา</h3>
+        <div v-if="students" class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  รูปโปรไฟล์
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  ชื่อ
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr
+                v-for="student in students"
+                :key="student.id"
+                class="hover:bg-gray-50 transition-colors duration-200"
+              >
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex-shrink-0 relative w-10 h-10">
+                    <img
+                      :src="
+                        student.user.profile ||
+                        'https://cnthruujnkkutwrqmslk.supabase.co/storage/v1/object/public/files/uploads/user.png'
+                      "
+                      alt="Profile"
+                      class="absolute inset-0 w-full h-full rounded-full object-cover border-2 border-gray-300 ring-2 ring-blue-500 ring-offset-2 ring-offset-white"
+                    />
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {{ student.firstName }} {{ student.lastName }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+        <p v-else class="text-gray-500 text-center">ไม่พบนักศึกษา</p>
+        <div class="flex justify-end mt-4">
           <button
-            @click="handleClose"
-            class="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            @click="closeModal"
+            class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
           >
-            Close
+            ปิด
           </button>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+button {
+  transition: background-color 0.2s ease-in-out;
+}
+</style>
