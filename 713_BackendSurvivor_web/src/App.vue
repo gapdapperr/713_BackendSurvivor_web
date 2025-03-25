@@ -2,7 +2,6 @@
 import { onMounted } from 'vue'
 import { RouterView } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
-import BackButton from '@/components/BackButton.vue'
 import { useAuthStore } from '@/stores/auth'
 import type { User } from '@/types'
 
