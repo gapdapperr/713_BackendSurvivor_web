@@ -19,7 +19,7 @@ export default {
       formData.append('profile', file)
     }
 
-    return apiClient.post('/api/v1/auth/registerStudent', formData, {
+    return apiClient.post('/api/v1/auth/register-student', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

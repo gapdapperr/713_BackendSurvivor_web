@@ -55,7 +55,7 @@ function handleFileUpload(event: Event) {
       profileImage.value = file
       imagePreview.value = URL.createObjectURL(file)
     } else {
-      messageStore.updateMessage('กรุณาเลือกไฟล์รูปภาพ')
+      messageStore.updateMessage('กรุณาเลือกไฟล์รูปภาพ', 'info')
     }
   }
 }
@@ -67,7 +67,7 @@ onMounted(async () => {
     departments.value = response.data
   } catch (error) {
     console.error('Failed to load departments:', error)
-    messageStore.updateMessage('Could not load departments')
+    messageStore.updateMessage('ไม่สามารถโหลดภาควิชาได้', 'error')
   }
 })
 
@@ -84,11 +84,11 @@ const onSubmit = handleSubmit(async (values) => {
     )
 
     router.push({ name: 'login-view' })
-    messageStore.updateMessage('ลงทะเบียนสำเร็จ! กรุณาเข้าสู่ระบบ')
+    messageStore.updateMessage('ลงทะเบียนสำเร็จ! กรุณาเข้าสู่ระบบ', 'success')
   } catch (error: any) {
     console.error('Registration error:', error)
     const errorMessage = error.response?.data?.message || 'ไม่สามารถลงทะเบียนได้'
-    messageStore.updateMessage(errorMessage)
+    messageStore.updateMessage(errorMessage, 'error')
   }
 })
 </script>

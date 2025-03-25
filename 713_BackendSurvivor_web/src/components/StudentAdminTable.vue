@@ -26,7 +26,7 @@ async function fetchAdvisors(departmentId: number) {
     const response = await TeacherService.getTeacherByDepartmentId(departmentId)
     availableAdvisors.value = response.data
   } catch (error) {
-    messageStore.updateMessage('ไม่สามารถโหลดรายชื่ออาจารย์ได้')
+    messageStore.updateMessage('ไม่สามารถโหลดรายชื่ออาจารย์ได้', 'error')
     console.error('Error fetching advisors:', error)
   } finally {
     isLoading.value = false
@@ -59,12 +59,12 @@ async function handleSubmit() {
         selectedStudent.value.studentId,
         parseInt(selectedAdvisor.value),
       )
-      messageStore.updateMessage('อัพเดทอาจารย์ที่ปรึกษาสำเร็จ')
+      messageStore.updateMessage('อัพเดทอาจารย์ที่ปรึกษาสำเร็จ', 'success')
       await props.onRefresh()
       closeModal()
     } catch (error) {
       console.error('Error updating advisor:', error)
-      messageStore.updateMessage('ไม่สามารถอัพเดทอาจารย์ที่ปรึกษาได้')
+      messageStore.updateMessage('ไม่สามารถอัพเดทอาจารย์ที่ปรึกษาได้', 'error')
     } finally {
       isLoading.value = false
     }
