@@ -86,7 +86,8 @@ const props = defineProps<{
               {{ teacher._count?.students || 0 }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-              <StudentByTeacherModal :teacherId="teacher.id" />
+              <div  v-if="(teacher._count?.students ?? 0) > 0" >
+              <StudentByTeacherModal :teacherId="teacher.id" /></div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
               <EditTeacherModal :Teacher="teacher" :onRefresh="props.onRefresh" />
