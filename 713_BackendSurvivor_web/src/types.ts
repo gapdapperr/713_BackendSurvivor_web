@@ -68,8 +68,20 @@ export interface Teacher {
   id: number
   firstName: string
   lastName: string
+  user: {
+    id: number
+    profile: string
+  }
   academicPosition: {
+    id: number
     title: string
+  }
+  department: {
+    id: number
+    name: string
+  }
+  _count?: {
+    students: number
   }
 }
 
@@ -82,6 +94,7 @@ export interface Department {
   id: number
   name: string
 }
+
 
 export interface Comment {
   id: number
@@ -112,3 +125,8 @@ export interface Comment {
 }
 
 // Add Vue Router type augmentation
+export interface Position {
+  id: number
+  title: string
+}
+

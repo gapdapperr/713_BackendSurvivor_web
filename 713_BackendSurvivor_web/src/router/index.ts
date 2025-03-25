@@ -1,8 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
 import LandingView from '@/views/LandingView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import StudentView from '@/views/dashboard-admin/student/StudentView.vue'
+import TeacherView from '@/views/dashboard-admin/teacher/TeacherView.vue'
 import TestPageView from '@/views/TestPageView.vue'
 import AdminDashboardView from '@/views/dashboard-admin/DashboardView.vue'
 import StudentDashboardView from '@/views/dashboard-student/DashboardView.vue'
@@ -15,6 +17,7 @@ import UnauthorizedView from '@/views/UnauthorizedView.vue'
 import { useAuthStore } from '@/stores/auth'
 import { useStudentStore } from '@/stores/student'
 import StudentService from '@/services/StudentService'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,7 +49,10 @@ const router = createRouter({
         {
           path: 'teachers',
           name: 'admin-teachers-view',
-          component: TestPageView,
+          component: TeacherView,
+          props: (route) => ({
+            page: parseInt(route.query.page as string) || 1,
+          }),
         },
         {
           path: 'students',
@@ -161,7 +167,7 @@ const router = createRouter({
       path: '/:catchAll(.*)',
       name: 'not-found',
       component: NotFoundView,
-    },
+    }
   ],
 })
 router.beforeEach((to, from, next) => {
