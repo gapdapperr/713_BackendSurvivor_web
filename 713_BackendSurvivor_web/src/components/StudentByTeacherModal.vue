@@ -11,7 +11,7 @@ const showModal = ref(false)  // Modal visibility state
 // Fetch students data from the service
 async function fetchStudents() {
 try {
-  const response = await StudentService.getAllStudentsByTeacherId(props.teacherId)
+  const response = await StudentService.getStudentByTeacherId(props.teacherId)
   students.value = response.data
 } catch (error) {
   console.log(error)
