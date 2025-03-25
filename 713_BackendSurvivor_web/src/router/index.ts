@@ -8,6 +8,7 @@ import TeacherView from '@/views/dashboard-admin/teacher/TeacherView.vue'
 import TestPageView from '@/views/TestPageView.vue'
 import AdminDashboardView from '@/views/dashboard-admin/DashboardView.vue'
 import StudentDashboardView from '@/views/dashboard-student/DashboardView.vue'
+import StudentCommentView from '@/views/dashboard-student/comment/CommentView.vue'
 import TeacherDashboardView from '@/views/dashboard-teacher/DashboardView.vue'
 import TeacherStudentView from '@/views/dashboard-teacher/student/StudentView.vue'
 import TeacherCommentView from '@/views/dashboard-teacher/student/comment/CommentView.vue'
@@ -16,8 +17,9 @@ import NetworkErrorView from '@/views/NetworkErrorView.vue'
 import UnauthorizedView from '@/views/UnauthorizedView.vue'
 import { useAuthStore } from '@/stores/auth'
 import { useStudentStore } from '@/stores/student'
+import { useTeacherStore } from '@/stores/teacher'
 import StudentService from '@/services/StudentService'
-
+import TeacherService from '@/services/teacherService'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -132,7 +134,25 @@ const router = createRouter({
         {
           path: 'teacher',
           name: 'student-teacher-view',
-          component: TestPageView,
+          component: StudentCommentView,
+          beforeEnter: () => {
+            const teacherStore = useTeacherStore()
+            return TeacherService.getMyTeacher()
+              .then((response) => {
+                // need to setup the data for the event
+                teacherStore.setTeacher(response.data)
+              })
+              .catch((error) => {
+                if (error.response && error.response.status === 404) {
+                  return {
+                    name: '404-resource-view',
+                    params: { resource: 'teacher' },
+                  }
+                } else {
+                  return { name: 'network-error-view' }
+                }
+              })
+          },
         },
         {
           path: 'announcements',
@@ -167,7 +187,7 @@ const router = createRouter({
       path: '/:catchAll(.*)',
       name: 'not-found',
       component: NotFoundView,
-    }
+    },
   ],
 })
 router.beforeEach((to, from, next) => {

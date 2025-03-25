@@ -85,6 +85,10 @@ export interface Teacher {
   }
 }
 
+export interface TeacherState {
+  teacher: Teacher | null
+}
+
 export interface MessageState {
   message: string
   type?: 'success' | 'error' | 'info'
@@ -94,7 +98,6 @@ export interface Department {
   id: number
   name: string
 }
-
 
 export interface Comment {
   id: number
@@ -129,4 +132,3 @@ export interface Position {
   id: number
   title: string
 }
-
