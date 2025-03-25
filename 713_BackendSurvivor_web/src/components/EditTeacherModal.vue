@@ -1,77 +1,26 @@
 <script setup lang="ts">
+import { ref, defineProps } from 'vue'
+import type { Teacher } from '@/types'
 import PositionService from '@/services/PositionService'
 import DepartmentService from '@/services/DepartmentService'
-import TeacherService from '@/services/teacherService'
-import { ref } from 'vue'
+import teacherService from '@/services/teacherService'
 
+// Define the incoming teacher prop
 const props = defineProps<{
+  Teacher: Teacher
   onRefresh: () => void
 }>()
 
-// Modal visibility state
-const selectedFile = ref<File | null>(null)
+// Local reactive variables for the modal form
 const showModal = ref(false)
-const newTeacher = ref({
-  firstName: '',
-  lastName: '',
-  academicPositionId: '',
-  departmentId: '',
-  username: '',
-  password: '',
-})
-
-// Function to handle file selection
-function handleFileSelection(event: Event) {
-  const target = event.target as HTMLInputElement
-  const file = target.files?.[0]
-  if (file) {
-    selectedFile.value = file // Store the selected file
-  }
-}
-
-// Function to open the modal
-const openModal = () => {
-  showModal.value = true
-}
-
-// Function to close the modal
-const closeModal = () => {
-  showModal.value = false
-  newTeacher.value = {
-    firstName: '',
-    lastName: '',
-    academicPositionId: '',
-    departmentId: '',
-    username: '',
-    password: '',
-  }
-}
-
-async function AddTeacher() {
-  const teacherData = new FormData()
-  teacherData.append('firstName', newTeacher.value.firstName)
-  teacherData.append('lastName', newTeacher.value.lastName)
-  teacherData.append('academicPositionId', newTeacher.value.academicPositionId)
-  teacherData.append('departmentId', newTeacher.value.departmentId)
-  teacherData.append('username', newTeacher.value.username)
-  teacherData.append('password', newTeacher.value.password)
-  console.log(teacherData)
-  if (selectedFile.value) {
-    teacherData.append('profile', selectedFile.value) // Append the file
-  }
-
-  try {
-    const response = await TeacherService.addTeacher(teacherData)
-    console.log(response.data)
-    props.onRefresh()
-    closeModal()
-  } catch (error) {
-    console.log(error)
-  }
-}
-
+const firstName = ref()
+const lastName = ref()
+const academicPosition = ref()
+const department = ref()
 const availablePosition = ref()
 const availableDepartment = ref()
+
+
 
 async function fetchPositions() {
   try {
@@ -91,32 +40,57 @@ async function fetchDepartments() {
   }
 }
 
-fetchDepartments()
-fetchPositions()
+// Function to open the modal
+const openModal = () => {
+  fetchPositions()
+  fetchDepartments()
+  firstName.value = props.Teacher.firstName
+  lastName.value = props.Teacher.lastName
+  academicPosition.value = props.Teacher.academicPosition.id
+  department.value = props.Teacher.department.id
+  showModal.value = true
+}
+
+// Function to close the modal
+const closeModal = () => {
+  showModal.value = false
+}
+
+// Function to save changes (update teacher data)
+const saveChanges = async () => {
+  // Here you would typically emit an event or call an API to update the teacher
+  const updatedTeacher = {
+    firstName: firstName.value,
+    lastName: lastName.value,
+    academicPositionId: academicPosition.value,
+    departmentId: department.value,
+  }
+  console.log(updatedTeacher)
+  const Teacher = await teacherService.updateTeacher(props.Teacher.id, updatedTeacher)
+  props.onRefresh() // Refresh the teacher list
+  closeModal() // Close the modal after saving changes
+}
 </script>
 
 <template>
   <div>
-    <!-- Button container with flex and justify-end -->
-    <div class="flex justify-end mb-4">
-      <!-- Button to open the modal -->
-      <button
-        @click="openModal"
-        class="px-6 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
-      >
-        เพิ่มอาจารย์
-      </button>
-    </div>
+    <!-- Edit Button -->
+    <button
+      @click="openModal"
+      class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+    >
+      แก้ไข
+    </button>
 
     <!-- Modal -->
     <div v-if="showModal" class="modal-overlay" @click="closeModal">
       <div class="modal" @click.stop>
-        <h3 class="text-lg font-bold text-gray-800 mb-4">เพิ่มอาจารย์</h3>
-        <form @submit.prevent="AddTeacher">
+        <h3 class="text-lg font-bold text-gray-800 mb-4">แก้ไขข้อมูลอาจารย์</h3>
+        <form @submit.prevent="saveChanges">
           <div class="mb-4">
             <label for="firstName" class="block text-sm font-medium text-gray-700">ชื่อ:</label>
             <input
-              v-model="newTeacher.firstName"
+              v-model="firstName"
               type="text"
               id="firstName"
               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
@@ -126,7 +100,7 @@ fetchPositions()
           <div class="mb-4">
             <label for="lastName" class="block text-sm font-medium text-gray-700">นามสกุล:</label>
             <input
-              v-model="newTeacher.lastName"
+              v-model="lastName"
               type="text"
               id="lastName"
               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
@@ -136,7 +110,7 @@ fetchPositions()
           <div class="mb-4">
             <label for="position" class="block text-sm font-medium text-gray-700">ตำแหน่ง:</label>
             <select
-              v-model="newTeacher.academicPositionId"
+              v-model="academicPosition"
               id="position"
               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               required
@@ -150,7 +124,7 @@ fetchPositions()
           <div class="mb-4">
             <label for="department" class="block text-sm font-medium text-gray-700">แผนก:</label>
             <select
-              v-model="newTeacher.departmentId"
+              v-model="department"
               id="department"
               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               required
@@ -164,36 +138,6 @@ fetchPositions()
                 {{ department.name }}
               </option>
             </select>
-          </div>
-          <div class="mb-4">
-            <label for="username" class="block text-sm font-medium text-gray-700">ชื่อผู้ใช้:</label>
-            <input
-              v-model="newTeacher.username"
-              type="text"
-              id="username"
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label for="password" class="block text-sm font-medium text-gray-700">รหัสผ่าน:</label>
-            <input
-              v-model="newTeacher.password"
-              type="password"
-              id="password"
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label for="profile" class="block text-sm font-medium text-gray-700">รูปโปรไฟล์:</label>
-            <input
-              type="file"
-              id="profile"
-              @change="handleFileSelection"
-              class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-gray-300 file:text-sm file:font-medium file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
-              accept="image/*"
-            />
           </div>
           <div class="flex justify-end space-x-4">
             <button

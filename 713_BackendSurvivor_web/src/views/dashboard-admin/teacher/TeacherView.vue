@@ -1,44 +1,41 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { ref, computed, watchEffect } from 'vue'
+import { useRouter } from 'vue-router'
 import TeacherTable from '@/components/TeacherTable.vue'
-import AddTeacherModal from '@/components/AddTeacherModal.vue'
-import TeacherService from '@/services/teacherService'
+import teacherService from '@/services/teacherService'
 import Pagination from '@/components/Pagination.vue'
+import AddTeacherModal from '@/components/AddTeacherModal.vue'
+import type { Teacher } from '@/types'
 
-const teachers = ref([])
-const totalTeachers = ref(0)
-const currentPage = ref(1)
+interface Props {
+  page: number
+}
+
+const router = useRouter()
 const pageSize = 10
+const totalTeachers = ref(0)
+const teachers = ref<Teacher[]>([])
+const props = defineProps<Props>()
+const page = computed(() => props.page)
 const isLoading = ref(false)
 
-const route = useRoute()
-const router = useRouter()
-
-// Fetch teachers from the API
-const fetchTeachers = async () => {
+async function fetchTeachers() {
   try {
-    console.log('Fetching teachers for page:', currentPage.value)
     isLoading.value = true
-    const response = await TeacherService.getAllTeachers(currentPage.value, pageSize)
+    const response = await teacherService.getAllTeachers(page.value, pageSize)
     teachers.value = response.data
-    totalTeachers.value = parseInt(response.headers['x-total-count'], 10) || 0
+    totalTeachers.value = parseInt(response.headers['x-total-count'])
   } catch (error) {
-    console.error('Error fetching teachers:', error)
+    console.log(error)
   } finally {
     isLoading.value = false
   }
 }
 
-// Watch the route query for page changes
 watchEffect(() => {
-  const page = parseInt(route.query.page as string) || 1
-  if (currentPage.value !== page) {
-    currentPage.value = page
-  }
-  console.log('Current Page:', currentPage.value)
   fetchTeachers()
-})
+}
+  )
 </script>
 
 <template>
@@ -69,7 +66,7 @@ watchEffect(() => {
 
     <!-- Pagination -->
     <Pagination
-      :currentPage="currentPage"
+      :currentPage="page"
       :totalItems="totalTeachers"
       :pageSize="pageSize"
       routeName="admin-teachers-view"
