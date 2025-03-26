@@ -1,4 +1,7 @@
 <script setup>
+import axios from 'axios';
+import { onMounted } from 'vue';
+
 const dashboardItems = [
   {
     title: "รายชื่อนักศึกษา",
@@ -24,11 +27,24 @@ const dashboardItems = [
 ];
 //ต้องเชื่อมกับ api เพื่อเรียกดูข้อมูลอาจารย์
 const professor = {
-  name: "ดร. สมชาย ใจดี",
-  department: "วิทยาการคอมพิวเตอร์",
-  contact: "somchai@example.com",
+  name: " ",
+  department: " ",
+  contact: " ",
   avatar: "https://via.placeholder.com/150", // เปลี่ยนเป็น URL รูปจริง
 };
+
+const fetchTeacherData = async () => {
+  try {
+    const response = await axios.get ("https://api.example.com/professor"); //เปลี่ยนเป็น api จริง
+    teacher.value = response.data 
+  } catch (error) {
+    console.error("❌ ดึงข้อมูลอาจารย์ล้มเหลว:", error)
+  }
+}
+
+onMounted(() => {
+  fetchTeacherData();
+});
 </script>
 
 <template>
