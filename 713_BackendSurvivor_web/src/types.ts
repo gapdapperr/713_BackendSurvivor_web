@@ -132,3 +132,14 @@ export interface Position {
   id: number
   title: string
 }
+
+export interface Appointment {
+  id: number
+  title: string
+  content: string
+  requestedTime: string
+  finalTime: string
+  status: string
+  isAccepted: boolean
+  createdAt: string
+}
