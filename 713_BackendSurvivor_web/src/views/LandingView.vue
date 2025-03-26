@@ -37,8 +37,15 @@ const features = [
 <template>
   <div class="bg-gray-50 min-h-screen">
     <!-- Hero Section -->
-    <div class="relative isolate px-6 pt-14 lg:px-8">
-      <div class="mx-auto max-w-2xl py-8 sm:py-24 lg:py-32">
+    <div class="relative isolate px-6 pt-10 lg:px-8">
+      <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+        <img
+          class="mx-auto h-40 w-auto"
+          src="https://waedbkvmagwfzbzpdost.supabase.co/storage/v1/object/public/files/uploads/logo.png"
+          alt="ระบบอาจารย์ที่ปรึกษา"
+        />
+      </div>
+      <div class="mx-auto max-w-2xl py-2 sm:py-8 lg:py-16">
         <div class="text-center">
           <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
             ระบบเชื่อมต่อนักศึกษากับอาจารย์ที่ปรึกษา

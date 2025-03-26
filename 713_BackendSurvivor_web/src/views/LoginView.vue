@@ -56,18 +56,18 @@ const onSubmit = handleSubmit(async (values: { username: string; password: strin
 </script>
 
 <template>
-  <div class="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+  <div class="flex min-h-full flex-1 flex-col justify-center px-6 py-8 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
       <img
-        class="mx-auto h-10 w-auto"
-        src="https://tailwindcss.com/_next/static/media/tailwindcss-mark.d52e9897.svg"
+        class="mx-auto h-40 w-auto"
+        src="https://waedbkvmagwfzbzpdost.supabase.co/storage/v1/object/public/files/uploads/logo.png"
         alt="ระบบอาจารย์ที่ปรึกษา"
       />
-      <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+      <h2 class="mt-5 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
         เข้าสู่ระบบ
       </h2>
     </div>
-    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+    <div class="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
       <!-- Message Alert -->
       <div
         v-if="messageStore.message"
