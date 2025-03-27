@@ -1,41 +1,34 @@
 <script setup lang="ts">
-import type { Appointment } from '@/types'
 import { ref, onMounted } from 'vue'
 import AppointmentService from '@/services/AppointmentService'
-import NewAppointmentModal from '@/components/NewAppointmentModal.vue'
-import AppointmentCard from '@/components/AppointmentCard.vue'
+import AppointmentTeacherTable from '@/components/AppointmentTeacherTable.vue'
 
-const appointments = ref<Appointment[]>([])
 
-async function fetchAppointments() {
+const appointments = ref([])
+
+async function fetchAppointment() {
   const userString = localStorage.getItem('user')
   if (!userString) {
     return
   }
   const user = JSON.parse(userString)
-  const studentId = user.student.studentId
-  const response = await AppointmentService.getAppointmentsByStudentId(studentId)
-  appointments.value = response.data
+  const teacherId = user.teacher.id
+  const reponse = await AppointmentService.getAppointmentsByTeacherId(teacherId)
+    appointments.value = reponse.data
 }
 
 onMounted(() => {
- fetchAppointments()
+  fetchAppointment()
 })
-
-
 </script>
 
 <template>
   <div class="dashboard p-6 bg-gray-50 min-h-screen">
-    <h1 class="text-2xl font-bold text-gray-800 mb-4">จัดการนัดหมาย</h1>
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">จัดการนัดหมาย</h2>
 
-    <!-- New Appointment Modal -->
-    <div class="mb-6">
-      <NewAppointmentModal :onRefresh="fetchAppointments" />
-    </div>
-
-    <!-- Loading Skeleton -->
+    <!-- Appointment Table -->
     <div v-if="appointments.length === 0" class="space-y-4">
+      <!-- Loading Skeleton -->
       <div v-for="n in 3" :key="n" class="bg-white rounded-lg shadow-sm p-4 animate-pulse">
         <div class="flex items-center space-x-4">
           <div class="h-12 w-12 bg-gray-200 rounded-full"></div>
@@ -48,12 +41,13 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- Appointment Cards -->
+    <!-- Appointment Teacher Table -->
     <div v-else>
-      <AppointmentCard :appointment="appointments" :onRefresh="fetchAppointments" />
+      <AppointmentTeacherTable :appointments="appointments" :onRefresh="fetchAppointment" />
     </div>
   </div>
 </template>
+
 
 <style scoped>
 .dashboard {
@@ -69,11 +63,6 @@ onMounted(() => {
   font-weight: bold;
   color: #1f2937; /* Dark gray text */
   margin-bottom: 16px;
-}
-
-.mb-6 {
-  /* Spacing for sections */
-  margin-bottom: 24px;
 }
 
 .bg-gray-50 {

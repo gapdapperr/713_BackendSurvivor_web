@@ -143,3 +143,22 @@ export interface Appointment {
   isAccepted: boolean
   createdAt: string
 }
+
+export interface AppointmentByTeacher {
+  id: number
+  title: string
+  content: string
+  requestedTime: string
+  finalTime: string
+  createdAt: string
+  status: string
+  isAccepted: boolean
+  student: {
+    id: number
+    firstName: string
+    lastName: string
+    user: {
+      profile: string
+    }
+  }
+}
