@@ -40,7 +40,6 @@ const closeModal = () => {
 
 </script>
 
-
 <template>
   <div>
     <!-- Button to open the modal -->
@@ -81,7 +80,7 @@ const closeModal = () => {
               type="submit"
               class="px-6 py-2 text-white bg-green-600 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors duration-200"
             >
-              สร้างการนัดหมาย
+              ยืนยัน
             </button>
             <button
               type="button"
@@ -95,7 +94,6 @@ const closeModal = () => {
       </div>
     </div>
   </div>
-
 </template>
 
 
@@ -132,14 +130,12 @@ label {
   color: #374151; /* Dark gray text */
 }
 
-input,
-textarea {
+input {
   font-size: 14px;
   color: #374151; /* Dark gray text */
 }
 
-input::placeholder,
-textarea::placeholder {
+input::placeholder {
   color: #9ca3af; /* Light gray placeholder */
 }
 
