@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Appointment } from '@/types'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import AppointmentService from '@/services/AppointmentService'
-import StudentAppointmentTable from '@/components/StudentAppointmentTable.vue'
 import NewAppointmentModal from '@/components/NewAppointmentModal.vue'
 import AppointmentCard from '@/components/AppointmentCard.vue'
 
@@ -19,7 +18,11 @@ async function fetchAppointments() {
   appointments.value = response.data
 }
 
-fetchAppointments()
+onMounted(() => {
+ fetchAppointments()
+})
+
+
 </script>
 
 <template>

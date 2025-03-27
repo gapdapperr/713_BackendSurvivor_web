@@ -13,6 +13,7 @@ import StudentAppointmentView from '@/views/dashboard-student/appointment/Appoin
 import TeacherDashboardView from '@/views/dashboard-teacher/DashboardView.vue'
 import TeacherStudentView from '@/views/dashboard-teacher/student/StudentView.vue'
 import TeacherCommentView from '@/views/dashboard-teacher/student/comment/CommentView.vue'
+import TeacherAppointmentView from '@/views/dashboard-teacher/appointment/AppointmentView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import NetworkErrorView from '@/views/NetworkErrorView.vue'
 import UnauthorizedView from '@/views/UnauthorizedView.vue'
@@ -119,7 +120,7 @@ const router = createRouter({
         {
           path: 'appointments',
           name: 'teacher-appointments-view',
-          component: TestPageView,
+          component: TeacherAppointmentView,
         },
       ],
     },
