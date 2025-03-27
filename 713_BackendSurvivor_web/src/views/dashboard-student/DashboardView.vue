@@ -30,12 +30,9 @@ const dashboardItems = [
 const announcements = ref([]);
 
 // ข้อมูลนักศึกษา (มาจาก API)
-const studentProfile = ref({
-  name: "",
-  studentId: "",
-  department: "",
-  avatar: "https://cdn-icons-png.flaticon.com/512/4140/4140047.png", 
-});
+const userString = localStorage.getItem('user')
+
+  const user = JSON.parse(userString)
 
 // ฟังก์ชันดึงข้อมูลจาก API
 const fetchAnnouncements = async () => {
@@ -95,13 +92,14 @@ onMounted(() => {
 
     <div class="mt-10 bg-white p-6 rounded-xl shadow-md flex items-center w-full max-w-5xl">
       <div class="flex-shrink-0">
-        <img :src="studentProfile.avatar" alt="นักศึกษา" class="w-40 h-40 rounded-lg" />
+        <img :src="user.profile" alt="นักศึกษา" class="w-40 h-40 rounded-lg" />
       </div>
       <div class="ml-6">
         <h2 class="text-2xl font-semibold">ข้อมูลส่วนตัว</h2>
-        <p class="mt-2 text-lg"><strong>ชื่อ:</strong> {{ studentProfile.name }}</p>
-        <p class="text-lg"><strong>รหัสนักศึกษา:</strong> {{ studentProfile.studentId }}</p>
-        <p class="text-lg"><strong>ภาควิชา:</strong> {{ studentProfile.department }}</p>
+        <p class="mt-2 text-lg"><strong>ชื่อ:</strong> {{ user.student.firstName }}</p>
+        <p class="mt-2 text-lg"><strong>นามสกุล:</strong> {{ user.student.lastName }}</p>
+        <p class="text-lg"><strong>รหัสนักศึกษา:</strong> {{ user.student.id }}</p>
+        <!-- <p class="text-lg"><strong>ภาควิชา:</strong> {{ studentProfile.department }}</p> -->
       </div>
     </div>
   </div>
