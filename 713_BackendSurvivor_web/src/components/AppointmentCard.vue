@@ -26,7 +26,22 @@ function formatDate(utcDate: string): string {
     <div v-for="appointment in appointments" :key="appointment.id" class="appointment-card">
       <div class="appointment-header">
         <h3>{{ appointment.title }}</h3>
-        <span class="status">{{ appointment.status }}</span>
+        <span
+  :class="[
+    'inline-block px-3 py-1 rounded-md text-sm font-medium', // Common styles for all statuses
+    {
+      'bg-green-100 text-green-800': appointment.status === 'ยืนยันการนัดหมาย',
+      'bg-red-100 text-red-800': appointment.status === 'ยกเลิกโดยอาจารย์' || appointment.status === 'ยกเลิกโดยนักศึกษา',
+      'bg-yellow-100 text-yellow-800': appointment.status === 'เสนอเวลานัดหมายใหม่' || appointment.status === 'ยอมรับโดยอาจารย์',
+      'bg-gray-100 text-gray-800': appointment.status !== 'ยืนยันการนัดหมาย' &&
+        appointment.status !== 'ยกเลิกโดยอาจารย์' &&
+        appointment.status !== 'ยกเลิกโดยนักศึกษา' &&
+        appointment.status !== 'เสนอเวลานัดหมายใหม่'
+    }
+  ]"
+>
+  {{ appointment.status }}
+</span>
       </div>
 
       <p><strong>รายละเอียด:</strong> {{ appointment.content }}</p>
@@ -107,14 +122,6 @@ function formatDate(utcDate: string): string {
   margin: 0;
   font-weight: bold;
   color: #111827; /* Darker text for titles */
-}
-
-.status {
-  background-color: #f3f4f6; /* Light gray background for status */
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 14px;
-  color: #6b7280; /* Medium gray text */
 }
 
 /* Text styling for card content */
