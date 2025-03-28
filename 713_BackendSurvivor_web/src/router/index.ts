@@ -1,27 +1,29 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import LandingView from '@/views/LandingView.vue'
-import LoginView from '@/views/LoginView.vue'
-import RegisterView from '@/views/RegisterView.vue'
-import StudentView from '@/views/dashboard-admin/student/StudentView.vue'
-import TeacherView from '@/views/dashboard-admin/teacher/TeacherView.vue'
-import TestPageView from '@/views/TestPageView.vue'
-import AdminDashboardView from '@/views/dashboard-admin/DashboardView.vue'
-import StudentDashboardView from '@/views/dashboard-student/DashboardView.vue'
-import StudentCommentView from '@/views/dashboard-student/comment/CommentView.vue'
-import StudentAppointmentView from '@/views/dashboard-student/appointment/AppointmentView.vue'
-import TeacherDashboardView from '@/views/dashboard-teacher/DashboardView.vue'
-import TeacherStudentView from '@/views/dashboard-teacher/student/StudentView.vue'
-import TeacherCommentView from '@/views/dashboard-teacher/student/comment/CommentView.vue'
-import TeacherAppointmentView from '@/views/dashboard-teacher/appointment/AppointmentView.vue'
-import NotFoundView from '@/views/NotFoundView.vue'
-import NetworkErrorView from '@/views/NetworkErrorView.vue'
-import UnauthorizedView from '@/views/UnauthorizedView.vue'
+import StudentService from '@/services/StudentService'
+import TeacherService from '@/services/teacherService'
 import { useAuthStore } from '@/stores/auth'
 import { useStudentStore } from '@/stores/student'
 import { useTeacherStore } from '@/stores/teacher'
-import StudentService from '@/services/StudentService'
-import TeacherService from '@/services/teacherService'
+import LandingView from '@/views/LandingView.vue'
+import LoginView from '@/views/LoginView.vue'
+import NetworkErrorView from '@/views/NetworkErrorView.vue'
+import NotFoundView from '@/views/NotFoundView.vue'
+import RegisterView from '@/views/RegisterView.vue'
+import TestPageView from '@/views/TestPageView.vue'
+import UnauthorizedView from '@/views/UnauthorizedView.vue'
+import AdminDashboardView from '@/views/dashboard-admin/DashboardView.vue'
+import StudentView from '@/views/dashboard-admin/student/StudentView.vue'
+import TeacherView from '@/views/dashboard-admin/teacher/TeacherView.vue'
+import StudentDashboardView from '@/views/dashboard-student/DashboardView.vue'
+import StudentAppointmentView from '@/views/dashboard-student/appointment/AppointmentView.vue'
+import StudentCommentView from '@/views/dashboard-student/comment/CommentView.vue'
+import TeacherDashboardView from '@/views/dashboard-teacher/DashboardView.vue'
+import TeacherAnnouncementView from '@/views/dashboard-teacher/announcement/AnnouncementView.vue'
+import TeacherAppointmentView from '@/views/dashboard-teacher/appointment/AppointmentView.vue'
+import TeacherStudentView from '@/views/dashboard-teacher/student/StudentView.vue'
+import TeacherCommentView from '@/views/dashboard-teacher/student/comment/CommentView.vue'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -115,7 +117,7 @@ const router = createRouter({
         {
           path: 'announcements',
           name: 'teacher-announcements-view',
-          component: TestPageView,
+          component: TeacherAnnouncementView,
         },
         {
           path: 'appointments',
