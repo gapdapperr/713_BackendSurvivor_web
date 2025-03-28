@@ -93,18 +93,38 @@ onMounted(fetchSummary)
   <div class="container mx-auto px-4 py-8">
     <h1 class="text-2xl font-bold mb-6">สรุปการนัดหมาย</h1>
 
-    <!-- Pie Chart -->
-    <div class="mb-8" v-if="!isLoading && summary">
-      <AppointmentStatusPieChart :summary="summary" />
-    </div>
-
+    <!-- Loading State -->
     <div v-if="isLoading" class="text-center py-8">
       <div
         class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-indigo-500 border-t-transparent"
       ></div>
     </div>
 
+    <!-- Empty State -->
+    <div v-else-if="!summary || Object.keys(summary).length === 0" class="text-center py-12">
+      <svg
+        class="mx-auto h-16 w-16 text-gray-400"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+        />
+      </svg>
+      <h3 class="mt-4 text-lg font-medium text-gray-900">ไม่พบข้อมูลการนัดหมาย</h3>
+      <p class="mt-2 text-sm text-gray-500">ยังไม่มีข้อมูลสรุปการนัดหมายในระบบ</p>
+    </div>
+
     <template v-else>
+      <!-- Pie Chart -->
+      <div class="mb-8" v-if="!isLoading && summary">
+        <AppointmentStatusPieChart :summary="summary" />
+      </div>
+
       <div v-for="(appointments, status) in summary" :key="status" class="mb-8">
         <!-- Status Card -->
         <div
