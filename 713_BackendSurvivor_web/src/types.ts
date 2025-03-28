@@ -189,3 +189,14 @@ export interface AppointmentByTeacher {
     }
   }
 }
+
+
+export interface Announcement {
+  id: number
+  title: string
+  content: string
+  fileUrl: string
+  createdAt: string
+  updatedAt: string
+  teacherId: number
+}

@@ -11,6 +11,7 @@ import AppointmentSummaryView from '@/views/dashboard-admin/appointment-summary/
 import StudentDashboardView from '@/views/dashboard-student/DashboardView.vue'
 import StudentCommentView from '@/views/dashboard-student/comment/CommentView.vue'
 import StudentAppointmentView from '@/views/dashboard-student/appointment/AppointmentView.vue'
+import StudentAnnouncementView from '@/views/dashboard-student/announcement/AnnouncementView.vue'
 import TeacherDashboardView from '@/views/dashboard-teacher/DashboardView.vue'
 import TeacherStudentView from '@/views/dashboard-teacher/student/StudentView.vue'
 import TeacherCommentView from '@/views/dashboard-teacher/student/comment/CommentView.vue'
@@ -160,7 +161,7 @@ const router = createRouter({
         {
           path: 'announcements',
           name: 'student-announcements-view',
-          component: TestPageView,
+          component: StudentAnnouncementView,
         },
         {
           path: 'appointments',

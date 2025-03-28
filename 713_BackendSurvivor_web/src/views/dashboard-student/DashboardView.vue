@@ -1,63 +1,60 @@
-<script setup>
-import axios from "axios";
-import { onMounted, ref } from "vue";
+<script setup lang="ts">
+import axios from 'axios'
+import { onMounted, ref } from 'vue'
+import AnnouncementService from '@/services/AnnouncementService'
+
+const latestAnnouncement = ref()
 
 const dashboardItems = [
   {
-    title: "สร้างนัดหมายอาจารย์",
-    description: "สร้างนัดหมายกับอาจารย์ที่ปรึกษา",
-    linkText: "ไปที่หน้าสร้างนัดหมาย",
-    link: "#",
-    icon: "📅",
+    title: 'สร้างนัดหมายอาจารย์',
+    description: 'สร้างนัดหมายกับอาจารย์ที่ปรึกษา',
+    linkText: 'ไปที่หน้าสร้างนัดหมาย',
+    link: 'student-appointments-view',
+    icon: '📅',
   },
   {
-    title: "ประกาศ",
-    description: "แสดงรายการประกาศจากอาจารย์ที่ปรึกษา",
-    linkText: "ไปที่หน้าประกาศ",
-    link: "#",
-    icon: "📄",
+    title: 'ประกาศ',
+    description: 'แสดงรายการประกาศจากอาจารย์ที่ปรึกษา',
+    linkText: 'ไปที่หน้าประกาศ',
+    link: 'student-announcements-view',
+    icon: '📄',
   },
   {
-    title: "รายการความคิดเห็น",
-    description: "รายการความคิดเห็นจากอาจารย์ที่ปรึกษา",
-    linkText: "ไปที่หน้าความคิดเห็น",
-    link: "#",
-    icon: "💬",
+    title: 'รายการความคิดเห็น',
+    description: 'รายการความคิดเห็นจากอาจารย์ที่ปรึกษา',
+    linkText: 'ไปที่หน้าความคิดเห็น',
+    link: 'student-teacher-view',
+    icon: '💬',
   },
-];
+]
 
-// ข้อมูลประกาศ (มาจาก API)
-const announcements = ref([]);
+function formatDate(utcDate: string): string {
+  const date = new Date(utcDate)
+  return date.toLocaleString() // Converts UTC to local time
+}
 
 // ข้อมูลนักศึกษา (มาจาก API)
 const userString = localStorage.getItem('user')
-
-  const user = JSON.parse(userString)
+if (!userString) {
+  throw new Error('User data not found in local storage')
+}
+const user = JSON.parse(userString)
 
 // ฟังก์ชันดึงข้อมูลจาก API
 const fetchAnnouncements = async () => {
   try {
-    const response = await axios.get("https://api.example.com/announcements"); // แก้ URL API
-    announcements.value = response.data;
+    const response = await AnnouncementService.getLatestAnnouncement()
+    latestAnnouncement.value = response.data
   } catch (error) {
-    console.error("Error fetching announcements:", error);
+    console.error('Error fetching announcements:', error)
   }
-};
-
-const fetchStudentProfile = async () => {
-  try {
-    const response = await axios.get("https://api.example.com/student-profile"); // แก้ URL API
-    studentProfile.value = response.data;
-  } catch (error) {
-    console.error("Error fetching student profile:", error);
-  }
-};
+}
 
 // ดึงข้อมูลเมื่อโหลดหน้า
 onMounted(() => {
-  fetchAnnouncements();
-  fetchStudentProfile();
-});
+  fetchAnnouncements()
+})
 </script>
 
 <template>
@@ -71,19 +68,28 @@ onMounted(() => {
         <div class="text-4xl">{{ item.icon }}</div>
         <h2 class="text-lg font-semibold mt-4">{{ item.title }}</h2>
         <p class="text-gray-600 text-sm mt-2">{{ item.description }}</p>
-        <a :href="item.link" class="text-blue-500 font-medium mt-4 inline-block hover:underline">
+        <router-link :to="{ name: item.link}" class="text-blue-500 font-medium mt-4 inline-block hover:underline">
           {{ item.linkText }} →
-        </a>
+        </router-link>
       </div>
     </div>
 
     <div class="mt-10 bg-white p-6 rounded-xl shadow-md w-full max-w-5xl">
       <h2 class="text-xl font-semibold mb-4">📢 ประกาศจากอาจารย์ที่ปรึกษา</h2>
-      <div v-if="announcements.length > 0">
-        <div v-for="announcement in announcements" :key="announcement.id" class="mb-4">
-          <h3 class="text-lg font-medium">{{ announcement.title }}</h3>
-          <p class="text-gray-600">{{ announcement.content }}</p>
-          <p class="text-sm text-gray-400">📅 {{ announcement.date }}</p>
+      <div v-if="latestAnnouncement">
+        <div class="mb-4">
+          <h3 class="text-lg font-medium">{{ latestAnnouncement.title }}</h3>
+          <p class="text-gray-600">{{ latestAnnouncement.content }}</p>
+          <p class="text-sm text-gray-400">📅 {{ formatDate(latestAnnouncement.createdAt) }}</p>
+          <iframe
+  v-if="latestAnnouncement.fileUrl"
+  :src="latestAnnouncement.fileUrl + '#page=1'"
+  class="w-full h-[600px] mt-4 rounded-lg border border-gray-200 shadow-sm"
+  frameborder="0"
+  loading="lazy"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen
+></iframe>
           <hr class="my-4" />
         </div>
       </div>
