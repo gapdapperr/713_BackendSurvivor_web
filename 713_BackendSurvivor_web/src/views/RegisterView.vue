@@ -87,8 +87,13 @@ const onSubmit = handleSubmit(async (values) => {
     messageStore.updateMessage('ลงทะเบียนสำเร็จ! กรุณาเข้าสู่ระบบ', 'success')
   } catch (error: any) {
     console.error('Registration error:', error)
-    const errorMessage = error.response?.data?.message || 'ไม่สามารถลงทะเบียนได้'
-    messageStore.updateMessage(errorMessage, 'error')
+    if (error.response?.status === 409) {
+      messageStore.updateMessage('รหัสนักศึกษานี้มีผู้ใช้งานแล้ว กรุณาใช้รหัสนักศึกษาอื่น', 'error')
+      username.value = '' // Clear username field
+    } else {
+      const errorMessage = error.response?.data?.message || 'ไม่สามารถลงทะเบียนได้'
+      messageStore.updateMessage(errorMessage, 'error')
+    }
   }
 })
 </script>
@@ -218,7 +223,20 @@ const onSubmit = handleSubmit(async (values) => {
             </p>
           </div>
         </div>
-
+        <!-- Message Alert -->
+        <div
+          v-if="messageStore.message"
+          :class="[
+            'mb-4 p-4 rounded-md border',
+            {
+              'bg-red-50 border-red-200 text-red-600': messageStore.type === 'error',
+              'bg-green-50 border-green-200 text-green-600': messageStore.type === 'success',
+              'bg-blue-50 border-blue-200 text-blue-600': messageStore.type === 'info',
+            },
+          ]"
+        >
+          <p class="text-sm">{{ messageStore.message }}</p>
+        </div>
         <!-- Submit Button -->
         <div>
           <button
