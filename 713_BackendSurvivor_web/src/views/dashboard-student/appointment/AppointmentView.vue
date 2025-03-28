@@ -6,23 +6,26 @@ import NewAppointmentModal from '@/components/NewAppointmentModal.vue'
 import AppointmentCard from '@/components/AppointmentCard.vue'
 
 const appointments = ref<Appointment[]>([])
+const isLoading = ref(false)
 
 async function fetchAppointments() {
-  const userString = localStorage.getItem('user')
-  if (!userString) {
-    return
+  try {
+    const userString = localStorage.getItem('user')
+    if (!userString) return
+
+    isLoading.value = true
+    const user = JSON.parse(userString)
+    const studentId = user.student.studentId
+    const response = await AppointmentService.getAppointmentsByStudentId(studentId)
+    appointments.value = response.data
+  } finally {
+    isLoading.value = false
   }
-  const user = JSON.parse(userString)
-  const studentId = user.student.studentId
-  const response = await AppointmentService.getAppointmentsByStudentId(studentId)
-  appointments.value = response.data
 }
 
 onMounted(() => {
- fetchAppointments()
+  fetchAppointments()
 })
-
-
 </script>
 
 <template>
@@ -35,7 +38,7 @@ onMounted(() => {
     </div>
 
     <!-- Loading Skeleton -->
-    <div v-if="appointments.length === 0" class="space-y-4">
+    <div v-if="isLoading" class="space-y-4">
       <div v-for="n in 3" :key="n" class="bg-white rounded-lg shadow-sm p-4 animate-pulse">
         <div class="flex items-center space-x-4">
           <div class="h-12 w-12 bg-gray-200 rounded-full"></div>
@@ -46,6 +49,27 @@ onMounted(() => {
           <div class="h-8 w-24 bg-gray-200 rounded"></div>
         </div>
       </div>
+    </div>
+
+    <!-- Empty State -->
+    <div v-else-if="appointments.length === 0" class="text-center py-12">
+      <svg
+        class="mx-auto h-16 w-16 text-gray-400"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+        />
+      </svg>
+      <h3 class="mt-4 text-lg font-medium text-gray-900">ไม่พบข้อมูลการนัดหมาย</h3>
+      <p class="mt-2 text-sm text-gray-500">
+        คุณยังไม่มีการนัดหมายในขณะนี้ กรุณาสร้างการนัดหมายใหม่
+      </p>
     </div>
 
     <!-- Appointment Cards -->

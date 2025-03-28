@@ -53,6 +53,25 @@ onMounted(loadComments)
       <!-- Teacher Info -->
       <TeacherInfoCard v-if="teacher" :teacher="teacher" />
 
+      <!-- Empty State -->
+      <div v-else-if="comments.length === 0" class="text-center py-12">
+        <svg
+          class="mx-auto h-16 w-16 text-gray-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.5"
+            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+          />
+        </svg>
+        <h3 class="mt-4 text-lg font-medium text-gray-900">ไม่มีข้อความ</h3>
+        <p class="mt-2 text-sm text-gray-500">ยังไม่มีการสนทนาระหว่างคุณกับอาจารย์</p>
+      </div>
+
       <!-- Comments List with Loading -->
       <CommentList v-if="!isLoading" :comments="comments" @reply="handleAddReply" />
       <div v-else class="text-center">
