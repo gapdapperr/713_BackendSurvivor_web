@@ -23,10 +23,27 @@ const fetchStudents = async () => {
 
     isLoading.value = true
     const response = await StudentService.getStudentByTeacherId(id)
+
+    // Check if response is empty
+    if (!response.data || response.data.length === 0) {
+      router.push({
+        name: '404-resource-view',
+        params: { resource: 'students' },
+      })
+      return
+    }
+
     students.value = response.data
   } catch (error) {
     console.error('Error fetching students:', error)
-    router.push({ name: 'network-error-view' })
+    if (error.response?.status === 404) {
+      router.push({
+        name: '404-resource-view',
+        params: { resource: 'students' },
+      })
+    } else {
+      router.push({ name: 'network-error-view' })
+    }
   } finally {
     isLoading.value = false
   }
