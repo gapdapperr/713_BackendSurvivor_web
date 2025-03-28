@@ -13,8 +13,9 @@ import RegisterView from '@/views/RegisterView.vue'
 import TestPageView from '@/views/TestPageView.vue'
 import UnauthorizedView from '@/views/UnauthorizedView.vue'
 import AdminDashboardView from '@/views/dashboard-admin/DashboardView.vue'
-import StudentView from '@/views/dashboard-admin/student/StudentView.vue'
 import TeacherView from '@/views/dashboard-admin/teacher/TeacherView.vue'
+import StudentView from '@/views/dashboard-admin/student/StudentView.vue'
+import AppointmentSummaryView from '@/views/dashboard-admin/appointment-summary/AppointmentSummaryView.vue'
 import StudentDashboardView from '@/views/dashboard-student/DashboardView.vue'
 import StudentAppointmentView from '@/views/dashboard-student/appointment/AppointmentView.vue'
 import StudentCommentView from '@/views/dashboard-student/comment/CommentView.vue'
@@ -71,7 +72,7 @@ const router = createRouter({
         {
           path: 'summary',
           name: 'admin-summary-view',
-          component: TestPageView,
+          component: AppointmentSummaryView,
         },
       ],
     },

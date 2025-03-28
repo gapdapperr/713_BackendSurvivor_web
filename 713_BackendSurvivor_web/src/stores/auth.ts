@@ -32,21 +32,21 @@ export const useAuthStore = defineStore('auth', {
           { name: 'หน้าหลักผู้ดูแลระบบ', routeName: 'admin-dashboard-view' },
           { name: 'จัดการอาจารย์', routeName: 'admin-teachers-view' },
           { name: 'จัดการนักศึกษา', routeName: 'admin-students-view' },
-          { name: 'สรุปข้อมูล', routeName: 'admin-summary-view' },
+          { name: 'สรุปการนัดหมาย', routeName: 'admin-summary-view' },
         ]
       } else if (this.isTeacher) {
         return [
           { name: 'หน้าหลักอาจารย์', routeName: 'teacher-dashboard-view' },
           { name: 'รายชื่อนักศึกษา', routeName: 'teacher-students-view' },
-          { name: 'จัดการประกาศ', routeName: 'teacher-announcements-view' },
+          { name: 'สร้างประกาศ', routeName: 'teacher-announcements-view' },
           { name: 'การนัดหมาย', routeName: 'teacher-appointments-view' },
         ]
       } else if (this.isStudent) {
         return [
           { name: 'หน้าหลักนักศึกษา', routeName: 'student-dashboard-view' },
-          { name: 'อาจารย์ที่ปรึกษา', routeName: 'student-teacher-view' },
+          { name: 'สร้างนัดหมายอาจารย์', routeName: 'student-appointments-view' },
           { name: 'ประกาศ', routeName: 'student-announcements-view' },
-          { name: 'การนัดหมาย', routeName: 'student-appointments-view' },
+          { name: 'รายการความคิดเห็น', routeName: 'student-teacher-view' },
         ]
       }
       return []

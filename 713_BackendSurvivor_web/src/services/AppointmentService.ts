@@ -16,7 +16,7 @@ export default {
 
   addNewAppointment(appointment: any) {
     return apiClient.post('/api/v1/appointments/new-appointment', appointment)
-},
+  },
 
   getAppointmentsByTeacherId(teacherId: string) {
     return apiClient.get(`/api/v1/appointments/teacher/${teacherId}`)
@@ -27,6 +27,12 @@ export default {
   },
 
   rescheduleAppointment(appointmentId: number, newDate: string) {
-    return apiClient.put(`/api/v1/appointments/${appointmentId}/teacher-reschedule`, {finalTime: newDate})
-  }
+    return apiClient.put(`/api/v1/appointments/${appointmentId}/teacher-reschedule`, {
+      finalTime: newDate,
+    })
+  },
+
+  getSummary() {
+    return apiClient.get('/api/v1/appointments/all')
+  },
 }

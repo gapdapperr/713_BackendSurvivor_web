@@ -21,6 +21,10 @@ const openModal = () => {
 // Close the modal
 const closeModal = () => {
   isVisible.value = false;
+  appointmentDate.value = '';
+  appointmentTime.value = '';
+  title.value = '';
+  content.value = '';
 };
 
 async function submitForm() {

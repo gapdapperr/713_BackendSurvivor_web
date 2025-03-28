@@ -1,46 +1,35 @@
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted } from 'vue'
 
 const dashboardItems = [
   {
-    title: "รายชื่อนักศึกษา",
-    description: "ข้อมูลรายชื่อนักศึกษาที่อยู่ในที่ปรึกษา",
-    linkText: "ไปที่หน้ารายชื่อ",
+    title: 'รายชื่อนักศึกษา',
+    description: 'ข้อมูลรายชื่อนักศึกษาที่อยู่ในที่ปรึกษา',
+    linkText: 'ไปที่หน้ารายชื่อ',
     link: 'teacher-students-view',
-    icon: "👩‍💻",
+    icon: '👩‍💻',
   },
   {
     title: "สร้างประกาศ",
     description: "สร้างประกาศสำหรับแจ้งข้อมูลข่าวสารนักศึกษา",
     linkText: "ไปที่หน้าสร้างประกาศ",
     link: 'teacher-announcements-view',
-    icon: "📄",
+    icon: '📄',
   },
   {
     title: "การนัดหมาย",
     description: "ดูรายการการนัดหมาย",
     linkText: "ไปที่หน้าสรุปการนัดหมาย",
     link: 'teacher-appointments-view',
-    icon: "📈",
+    icon: '📈',
   },
-];
+]
 //ต้องเชื่อมกับ api เพื่อเรียกดูข้อมูลอาจารย์
 const userString = localStorage.getItem('user')
 
-  const user = JSON.parse(userString)
 
-// const fetchTeacherData = async () => {
-//   try {
-//     const response = await axios.get ("https://api.example.com/professor"); //เปลี่ยนเป็น api จริง
-//     teacher.value = response.data 
-//   } catch (error) {
-//     console.error("❌ ดึงข้อมูลอาจารย์ล้มเหลว:", error)
-//   }
-// }
+const user = JSON.parse(userString)
 
-onMounted(() => {
-  fetchTeacherData();
-});
 </script>
 
 <template>
@@ -64,7 +53,7 @@ onMounted(() => {
       </div>
     </div>
 
-  <!-- /กล่องแสดงโปรไฟล์อาจารย์ -->
+    <!-- /กล่องแสดงโปรไฟล์อาจารย์ -->
     <div class="mt-10 bg-white p-6 rounded-xl shadow-md flex items-center w-full max-w-5x1 mx-auto">
       <div class="flex-shrink-0">
         <img :src="user.profile" alt="อาจารย์" class="w-32 h-32 rounded-lg" />
