@@ -19,6 +19,51 @@ function formatDate(utcDate: string): string {
   const date = new Date(utcDate)
   return date.toLocaleString() // Converts UTC to local time
 }
+
+const statusColors = {
+  APPOINTMENT_CONFIRMED: {
+    bg: 'bg-green-50',
+    text: 'text-green-700',
+    border: 'border-green-200',
+  },
+  AWAITING_RESPONSE: {
+    bg: 'bg-yellow-50',
+    text: 'text-yellow-700',
+    border: 'border-yellow-200',
+  },
+  NEW_DATE_PURPOSED: {
+    bg: 'bg-orange-50',
+    text: 'text-orange-700',
+    border: 'border-orange-200',
+  },
+  ACCEPTED_BY_TEACHER: {
+    bg: 'bg-indigo-50',
+    text: 'text-indigo-700',
+    border: 'border-indigo-200',
+  },
+  CANCELLED_BY_TEACHER: {
+    bg: 'bg-red-50',
+    text: 'text-red-700',
+    border: 'border-red-200',
+  },
+  CANCELLED_BY_STUDENT: {
+    bg: 'bg-gray-50',
+    text: 'text-gray-700',
+    border: 'border-gray-200',
+  },
+}
+
+const getStatusKey = (status: string): keyof typeof statusColors => {
+  const statusMap: { [key: string]: keyof typeof statusColors } = {
+    'ยืนยันการนัดหมาย': 'APPOINTMENT_CONFIRMED',
+    'รอการตอบรับจากอาจารย์': 'AWAITING_RESPONSE',
+    'เสนอเวลานัดหมายใหม่': 'NEW_DATE_PURPOSED',
+    'ยอมรับโดยอาจารย์': 'ACCEPTED_BY_TEACHER',
+    'ยกเลิกโดยอาจารย์': 'CANCELLED_BY_TEACHER',
+    'ยกเลิกโดยนักศึกษา': 'CANCELLED_BY_STUDENT'
+  }
+  return statusMap[status] as keyof typeof statusColors || 'AWAITING_RESPONSE'
+}
 </script>
 
 <template>
@@ -27,18 +72,12 @@ function formatDate(utcDate: string): string {
       <div class="appointment-header">
         <h3>{{ appointment.title }}</h3>
         <span
-  :class="[
-    'inline-block px-3 py-1 rounded-md text-sm font-medium', // Common styles for all statuses
-    {
-      'bg-green-100 text-green-800': appointment.status === 'ยืนยันการนัดหมาย',
-      'bg-red-100 text-red-800': appointment.status === 'ยกเลิกโดยอาจารย์' || appointment.status === 'ยกเลิกโดยนักศึกษา',
-      'bg-yellow-100 text-yellow-800': appointment.status === 'เสนอเวลานัดหมายใหม่' || appointment.status === 'ยอมรับโดยอาจารย์',
-      'bg-gray-100 text-gray-800': appointment.status !== 'ยืนยันการนัดหมาย' &&
-        appointment.status !== 'ยกเลิกโดยอาจารย์' &&
-        appointment.status !== 'ยกเลิกโดยนักศึกษา' &&
-        appointment.status !== 'เสนอเวลานัดหมายใหม่'
-    }
-  ]"
+  :class="{
+    [statusColors[getStatusKey(appointment.status)].bg]: true,
+    [statusColors[getStatusKey(appointment.status)].text]: true,
+    [statusColors[getStatusKey(appointment.status)].border]: true,
+    'inline-flex px-3 py-1 rounded-full text-xs font-medium': true
+  }"
 >
   {{ appointment.status }}
 </span>
