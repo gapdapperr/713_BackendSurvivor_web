@@ -21,7 +21,7 @@ const validationSchema = yup.object({
     .string()
     .required('กรุณากรอกรหัสนักศึกษา')
     .matches(/^\d{9}$/, 'รหัสนักศึกษาต้องเป็นตัวเลข 9 หลัก'),
-  password: yup.string().required('กรุณากรอกรหัสผ่าน').min(6, 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร'),
+  password: yup.string().required('กรุณากรอกรหัสผ่าน').min(8, 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร'),
   firstName: yup.string().required('กรุณากรอกชื่อ'),
   lastName: yup.string().required('กรุณากรอกนามสกุล'),
   departmentId: yup.string().required('กรุณาเลือกภาควิชา'),

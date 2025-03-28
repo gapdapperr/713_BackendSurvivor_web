@@ -13,7 +13,7 @@ const messageStore = useMessageStore()
 const isLoading = ref(false)
 const validationSchema = yup.object({
   username: yup.string().required('กรุณากรอกชื่อผู้ใช้'),
-  password: yup.string().required('กรุณากรอกรหัสผ่าน').min(5, 'รหัสผ่านต้องมีอย่างน้อย 5 ตัวอักษร'),
+  password: yup.string().required('กรุณากรอกรหัสผ่าน').min(8, 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร'),
 })
 
 const redirectToDashboard = () => {
