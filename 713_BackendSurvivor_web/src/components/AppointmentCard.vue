@@ -3,6 +3,8 @@ import { defineProps, ref, watchEffect } from 'vue'
 import type { Appointment } from '@/types'
 import ConfirmAppointmentByStudent from './ConfirmAppointmentByStudent.vue'
 import CancelAppointment from './CancelAppointment.vue'
+import { format } from 'date-fns'
+import { th } from 'date-fns/locale'
 
 const appointments = ref<Appointment[]>([])
 
@@ -15,9 +17,9 @@ watchEffect(() => {
   appointments.value = props.appointment
 })
 
-function formatDate(utcDate: string): string {
-  const date = new Date(utcDate)
-  return date.toLocaleString() // Converts UTC to local time
+const formatDate = (date: string | null) => {
+  if (!date) return '-'
+  return format(new Date(date), 'PPp', { locale: th })
 }
 
 const statusColors = {

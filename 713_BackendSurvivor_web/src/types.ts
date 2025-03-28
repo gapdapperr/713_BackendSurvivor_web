@@ -141,6 +141,7 @@ export interface Appointment {
   finalTime: string | null
   status: string
   isAccepted: boolean
+  createdAt: string
   student: {
     id: number
     firstName: string

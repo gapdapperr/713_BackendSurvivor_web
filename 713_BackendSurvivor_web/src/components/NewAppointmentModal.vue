@@ -49,14 +49,18 @@ async function submitForm() {
   }
 };
 
-
+const userString = localStorage.getItem('user')
+if (!userString) {
+  throw new Error('User data not found in local storage')
+}
+const user = JSON.parse(userString)
 
 
 </script>
 
 
 <template>
-  <div>
+  <div v-if="user.student.teacherId">
     <!-- Button to open the modal -->
     <button
       @click="openModal"
