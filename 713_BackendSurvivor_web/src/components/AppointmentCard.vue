@@ -19,6 +19,51 @@ function formatDate(utcDate: string): string {
   const date = new Date(utcDate)
   return date.toLocaleString() // Converts UTC to local time
 }
+
+const statusColors = {
+  APPOINTMENT_CONFIRMED: {
+    bg: 'bg-green-50',
+    text: 'text-green-700',
+    border: 'border-green-200',
+  },
+  AWAITING_RESPONSE: {
+    bg: 'bg-yellow-50',
+    text: 'text-yellow-700',
+    border: 'border-yellow-200',
+  },
+  NEW_DATE_PURPOSED: {
+    bg: 'bg-orange-50',
+    text: 'text-orange-700',
+    border: 'border-orange-200',
+  },
+  ACCEPTED_BY_TEACHER: {
+    bg: 'bg-indigo-50',
+    text: 'text-indigo-700',
+    border: 'border-indigo-200',
+  },
+  CANCELLED_BY_TEACHER: {
+    bg: 'bg-red-50',
+    text: 'text-red-700',
+    border: 'border-red-200',
+  },
+  CANCELLED_BY_STUDENT: {
+    bg: 'bg-gray-50',
+    text: 'text-gray-700',
+    border: 'border-gray-200',
+  },
+}
+
+const getStatusKey = (status: string): keyof typeof statusColors => {
+  const statusMap: { [key: string]: keyof typeof statusColors } = {
+    'ยืนยันการนัดหมาย': 'APPOINTMENT_CONFIRMED',
+    'รอการตอบรับจากอาจารย์': 'AWAITING_RESPONSE',
+    'เสนอเวลานัดหมายใหม่': 'NEW_DATE_PURPOSED',
+    'ยอมรับโดยอาจารย์': 'ACCEPTED_BY_TEACHER',
+    'ยกเลิกโดยอาจารย์': 'CANCELLED_BY_TEACHER',
+    'ยกเลิกโดยนักศึกษา': 'CANCELLED_BY_STUDENT'
+  }
+  return statusMap[status] as keyof typeof statusColors || 'AWAITING_RESPONSE'
+}
 </script>
 
 <template>
@@ -26,7 +71,16 @@ function formatDate(utcDate: string): string {
     <div v-for="appointment in appointments" :key="appointment.id" class="appointment-card">
       <div class="appointment-header">
         <h3>{{ appointment.title }}</h3>
-        <span class="status">{{ appointment.status }}</span>
+        <span
+  :class="{
+    [statusColors[getStatusKey(appointment.status)].bg]: true,
+    [statusColors[getStatusKey(appointment.status)].text]: true,
+    [statusColors[getStatusKey(appointment.status)].border]: true,
+    'inline-flex px-3 py-1 rounded-full text-xs font-medium': true
+  }"
+>
+  {{ appointment.status }}
+</span>
       </div>
 
       <p><strong>รายละเอียด:</strong> {{ appointment.content }}</p>
@@ -107,14 +161,6 @@ function formatDate(utcDate: string): string {
   margin: 0;
   font-weight: bold;
   color: #111827; /* Darker text for titles */
-}
-
-.status {
-  background-color: #f3f4f6; /* Light gray background for status */
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 14px;
-  color: #6b7280; /* Medium gray text */
 }
 
 /* Text styling for card content */

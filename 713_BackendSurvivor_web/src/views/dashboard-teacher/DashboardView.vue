@@ -27,7 +27,9 @@ const dashboardItems = [
 //ต้องเชื่อมกับ api เพื่อเรียกดูข้อมูลอาจารย์
 const userString = localStorage.getItem('user')
 
+
 const user = JSON.parse(userString)
+
 </script>
 
 <template>
