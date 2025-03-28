@@ -138,10 +138,37 @@ export interface Appointment {
   title: string
   content: string
   requestedTime: string
-  finalTime: string
+  finalTime: string | null
   status: string
   isAccepted: boolean
-  createdAt: string
+  student: {
+    id: number
+    firstName: string
+    lastName: string
+    department: {
+      name: string
+    }
+  }
+  teacher: {
+    id: number
+    firstName: string
+    lastName: string
+    academicPosition: {
+      title: string
+    }
+    department: {
+      name: string
+    }
+  }
+}
+
+export interface AppointmentSummary {
+  AWAITING_RESPONSE: Appointment[]
+  ACCEPTED_BY_TEACHER: Appointment[]
+  NEW_DATE_PURPOSED: Appointment[]
+  APPOINTMENT_CONFIRMED: Appointment[]
+  CANCELLED_BY_TEACHER: Appointment[]
+  CANCELLED_BY_STUDENT: Appointment[]
 }
 
 export interface AppointmentByTeacher {
