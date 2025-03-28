@@ -47,8 +47,12 @@ const onSubmit = handleSubmit(async (values: { username: string; password: strin
     messageStore.updateMessage('เข้าสู่ระบบสำเร็จ', 'success')
     redirectToDashboard()
   } catch (error: any) {
-    const errorMessage = error?.response?.data?.message || 'ไม่สามารถเข้าสู่ระบบได้'
-    messageStore.updateMessage(errorMessage, 'error')
+    if (error.response?.status === 401) {
+      messageStore.updateMessage('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง', 'error')
+    } else {
+      const errorMessage = error?.response?.data?.message || 'ไม่สามารถเข้าสู่ระบบได้'
+      messageStore.updateMessage(errorMessage, 'error')
+    }
   } finally {
     isLoading.value = false
   }
@@ -68,20 +72,6 @@ const onSubmit = handleSubmit(async (values: { username: string; password: strin
       </h2>
     </div>
     <div class="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
-      <!-- Message Alert -->
-      <div
-        v-if="messageStore.message"
-        :class="[
-          'mb-4 p-4 rounded-md border',
-          {
-            'bg-red-50 border-red-200 text-red-600': messageStore.type === 'error',
-            'bg-green-50 border-green-200 text-green-600': messageStore.type === 'success',
-            'bg-blue-50 border-blue-200 text-blue-600': messageStore.type === 'info',
-          },
-        ]"
-      >
-        <p class="text-sm">{{ messageStore.message }}</p>
-      </div>
       <form class="space-y-6" @submit.prevent="onSubmit">
         <div>
           <label for="username" class="block text-sm font-medium leading-6 text-gray-900"
@@ -117,6 +107,20 @@ const onSubmit = handleSubmit(async (values: { username: string; password: strin
               autocomplete="false"
             />
           </div>
+        </div>
+        <!-- Message Alert -->
+        <div
+          v-if="messageStore.message"
+          :class="[
+            'mb-4 p-4 rounded-md border',
+            {
+              'bg-red-50 border-red-200 text-red-600': messageStore.type === 'error',
+              'bg-green-50 border-green-200 text-green-600': messageStore.type === 'success',
+              'bg-blue-50 border-blue-200 text-blue-600': messageStore.type === 'info',
+            },
+          ]"
+        >
+          <p class="text-sm">{{ messageStore.message }}</p>
         </div>
         <div>
           <button
