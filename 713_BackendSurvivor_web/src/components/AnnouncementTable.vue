@@ -118,7 +118,7 @@ const isPreviewable = (url: string): boolean => {
               </button>
               <button
                 v-if="announcement.fileUrl"
-                @click="emit('download', announcement.fileUrl, getFileName(announcement.fileUrl))"
+                @click="emit('download', announcement.fileUrl)"
                 class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-indigo-700 hover:text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-md"
               >
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

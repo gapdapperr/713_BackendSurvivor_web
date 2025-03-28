@@ -14,6 +14,7 @@ const getFileType = (url: string): string => {
   if (['mp4', 'webm'].includes(ext)) return 'video'
   if (['mp3', 'wav'].includes(ext)) return 'audio'
   if (['pdf'].includes(ext)) return 'pdf'
+  if (['txt'].includes(ext)) return 'text'
   return 'other'
 }
 </script>
@@ -85,6 +86,14 @@ const getFileType = (url: string): string => {
             </a>
           </div>
         </object>
+
+        <!-- Text File Preview -->
+        <iframe
+          v-else-if="fileUrl && getFileType(fileUrl) === 'text'"
+          :src="fileUrl"
+          class="w-full h-[70vh] border-0 bg-gray-50 rounded-lg"
+          sandbox="allow-same-origin"
+        ></iframe>
 
         <!-- Other Files -->
         <div v-else class="text-center py-4">

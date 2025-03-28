@@ -18,7 +18,7 @@ const handlePreview = (fileUrl: string) => {
   selectedFile.value = selectedFile.value === fileUrl ? null : fileUrl
 }
 
-const handleDownload = (fileUrl: string, fileName: string) => {
+const handleDownload = (fileUrl: string) => {
   window.open(fileUrl, '_blank')
 }
 
