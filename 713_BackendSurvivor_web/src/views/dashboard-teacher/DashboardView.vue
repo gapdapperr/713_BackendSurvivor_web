@@ -10,16 +10,16 @@ const dashboardItems = [
     icon: '👩‍💻',
   },
   {
-    title: 'สร้างประกาศ',
-    description: 'สร้างประกาศสำหรับนักศึกษา',
-    linkText: 'ไปที่หน้าสร้างประกาศ',
+    title: "สร้างประกาศ",
+    description: "สร้างประกาศสำหรับแจ้งข้อมูลข่าวสารนักศึกษา",
+    linkText: "ไปที่หน้าสร้างประกาศ",
     link: 'teacher-announcements-view',
     icon: '📄',
   },
   {
-    title: 'สรุปการนัดหมาย',
-    description: 'ดูสถิติการนัดหมาย',
-    linkText: 'ไปที่หน้าสรุปการนัดหมาย',
+    title: "การนัดหมาย",
+    description: "ดูรายการการนัดหมาย",
+    linkText: "ไปที่หน้าสรุปการนัดหมาย",
     link: 'teacher-appointments-view',
     icon: '📈',
   },
@@ -44,12 +44,12 @@ const user = JSON.parse(userString)
         <div class="text-4xl">{{ item.icon }}</div>
         <h2 class="text-lg font-semibold mt-4">{{ item.title }}</h2>
         <p class="text-gray-600 text-sm mt-2">{{ item.description }}</p>
-        <router-link
-          :to="{ name: item.link }"
-          class="text-blue-500 font-medium mt-4 inline-block hover:underline"
-        >
+        <router-Link
+        :to="{name: item.link}" 
+        class="text-blue-500 font-medium mt-4 inline-block hover:underline">
           {{ item.linkText }} →
-        </router-link>
+        </router-Link>
+
       </div>
     </div>
 
