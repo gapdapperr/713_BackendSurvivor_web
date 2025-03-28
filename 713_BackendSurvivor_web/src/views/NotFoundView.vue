@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import { withDefaults } from 'vue'
 
 withDefaults(
@@ -9,6 +10,12 @@ withDefaults(
     resource: 'page',
   },
 )
+
+const router = useRouter()
+
+const handleBack = () => {
+  router.go(-1) // Go back to previous page
+}
 </script>
 
 <template>
@@ -32,10 +39,10 @@ withDefaults(
         <h3 class="text-lg text-gray-600">ไม่พบ {{ resource }} ที่คุณกำลังค้นหา</h3>
       </div>
 
-      <!-- Back Link -->
+      <!-- Back Button -->
       <div class="pt-6">
-        <router-link
-          :to="{ name: 'login' }"
+        <button
+          @click="handleBack"
           class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
         >
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -46,8 +53,8 @@ withDefaults(
               d="M10 19l-7-7m0 0l7-7m-7 7h18"
             />
           </svg>
-          กลับไปหน้าหลัก
-        </router-link>
+          กลับไปหน้าก่อนหน้า
+        </button>
       </div>
     </div>
   </div>
