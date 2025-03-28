@@ -176,15 +176,19 @@ fetchPositions()
             />
           </div>
           <div class="mb-4">
-            <label for="password" class="block text-sm font-medium text-gray-700">รหัสผ่าน:</label>
-            <input
-              v-model="newTeacher.password"
-              type="password"
-              id="password"
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              required
-            />
-          </div>
+  <label for="password" class="block text-sm font-medium text-gray-700">รหัสผ่าน:</label>
+  <input
+    v-model="newTeacher.password"
+    type="password"
+    id="password"
+    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+    required
+    minlength="8"
+    pattern="\d{8}"
+    title="กรุณากรอกรหัสผ่าน 8 หลัก"
+  />
+  <p class="mt-1 text-sm text-gray-500">*กรุณากรอกรหัสผ่าน 8 หลัก</p>
+</div>
           <div class="mb-4">
             <label for="profile" class="block text-sm font-medium text-gray-700">รูปโปรไฟล์:</label>
             <input
