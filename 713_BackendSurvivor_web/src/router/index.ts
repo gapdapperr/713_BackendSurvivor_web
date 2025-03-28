@@ -3,10 +3,11 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LandingView from '@/views/LandingView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
-import StudentView from '@/views/dashboard-admin/student/StudentView.vue'
-import TeacherView from '@/views/dashboard-admin/teacher/TeacherView.vue'
 import TestPageView from '@/views/TestPageView.vue'
 import AdminDashboardView from '@/views/dashboard-admin/DashboardView.vue'
+import TeacherView from '@/views/dashboard-admin/teacher/TeacherView.vue'
+import StudentView from '@/views/dashboard-admin/student/StudentView.vue'
+import AppointmentSummaryView from '@/views/dashboard-admin/appointment-summary/AppointmentSummaryView.vue'
 import StudentDashboardView from '@/views/dashboard-student/DashboardView.vue'
 import StudentCommentView from '@/views/dashboard-student/comment/CommentView.vue'
 import StudentAppointmentView from '@/views/dashboard-student/appointment/AppointmentView.vue'
@@ -69,7 +70,7 @@ const router = createRouter({
         {
           path: 'summary',
           name: 'admin-summary-view',
-          component: TestPageView,
+          component: AppointmentSummaryView,
         },
       ],
     },
