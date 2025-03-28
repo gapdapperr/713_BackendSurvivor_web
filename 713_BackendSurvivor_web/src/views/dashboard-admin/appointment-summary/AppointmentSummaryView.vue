@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import type { AppointmentSummary } from '@/types/appointment'
+import type { AppointmentSummary } from '@/types'
 import AppointmentService from '@/services/AppointmentService'
 import AppointmentTable from '@/components/AppointmentTable.vue'
 import AppointmentStatusPieChart from '@/components/AppointmentStatusPieChart.vue'
@@ -67,11 +67,6 @@ const visibleTables = ref<Record<string, boolean>>({
 
 const toggleTable = (status: string) => {
   visibleTables.value[status] = !visibleTables.value[status]
-}
-
-const formatDate = (date: string | null) => {
-  if (!date) return '-'
-  return format(new Date(date), 'PPp', { locale: th })
 }
 
 const fetchSummary = async () => {
