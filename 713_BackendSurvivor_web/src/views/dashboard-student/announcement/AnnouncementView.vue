@@ -23,6 +23,19 @@ onMounted(() => {
 </script>
 
 <template>
-  <h1>ประกาศจากอาจารย์ที่ปรึกษา</h1>
-  <AnnouncementTable :announcements="announcements" />
+  <div class="dashboard p-6 bg-gray-50 min-h-screen">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">ประกาศจากอาจารย์ที่ปรึกษา</h2>
+
+    <!-- Table Container -->
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+      <AnnouncementTable :announcements="announcements" />
+    </div>
+  </div>
 </template>
+
+
+<style scoped>
+.dashboard {
+  min-height: calc(100vh - 64px);
+}
+</style>

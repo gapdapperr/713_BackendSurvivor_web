@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import axios from 'axios'
 import { onMounted, ref } from 'vue'
 import AnnouncementService from '@/services/AnnouncementService'
 
@@ -34,7 +33,7 @@ function formatDate(utcDate: string): string {
   return date.toLocaleString() // Converts UTC to local time
 }
 
-// ข้อมูลนักศึกษา (มาจาก API)
+
 const userString = localStorage.getItem('user')
 if (!userString) {
   throw new Error('User data not found in local storage')
@@ -104,8 +103,8 @@ onMounted(() => {
         <h2 class="text-2xl font-semibold">ข้อมูลส่วนตัว</h2>
         <p class="mt-2 text-lg"><strong>ชื่อ:</strong> {{ user.student.firstName }}</p>
         <p class="mt-2 text-lg"><strong>นามสกุล:</strong> {{ user.student.lastName }}</p>
-        <p class="text-lg"><strong>รหัสนักศึกษา:</strong> {{ user.student.id }}</p>
-        <!-- <p class="text-lg"><strong>ภาควิชา:</strong> {{ studentProfile.department }}</p> -->
+        <p class="text-lg"><strong>รหัสนักศึกษา:</strong> {{ user.student.studentId }}</p>
+        <p class="text-lg"><strong>ภาควิชา:</strong> {{ user.student.department.name }}</p>
       </div>
     </div>
   </div>
