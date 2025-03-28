@@ -1,7 +1,8 @@
 @@ -0,0 +1,110 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import AppointmentService from '@/services/AppointmentService';
+import TeacherService from '@/services/teacherService';
 
 const props = defineProps({
   onRefresh: Function
@@ -12,6 +13,9 @@ const appointmentDate = ref(''); // Date picker model
 const appointmentTime = ref(''); // Time picker model
 const title = ref(''); // Title input model
 const content = ref(''); // Content input model
+const hasTeacher = ref(false)
+const myTeacher = ref('')
+
 
 // Open the modal
 const openModal = () => {
@@ -49,6 +53,24 @@ async function submitForm() {
   }
 };
 
+async function checkTeacher() {
+  try {
+    const teacher = await TeacherService.getMyTeacher()
+    if (teacher && teacher.data) {
+      myTeacher.value = teacher.data
+      hasTeacher.value = true
+      console.log('Teacher found:', teacher.data) // Debug log
+    } else {
+      console.error('Teacher not found')
+      hasTeacher.value = false
+    }
+  } catch (error) {
+    console.error('Error checking teacher:', error)
+    hasTeacher.value = false
+  }
+}
+
+
 const userString = localStorage.getItem('user')
 if (!userString) {
   throw new Error('User data not found in local storage')
@@ -56,11 +78,16 @@ if (!userString) {
 const user = JSON.parse(userString)
 
 
+
+onMounted(() => {
+  checkTeacher();
+});
+
 </script>
 
 
 <template>
-  <div v-if="user.student.teacherId">
+  <div v-if="hasTeacher">
     <!-- Button to open the modal -->
     <button
       @click="openModal"
