@@ -22,6 +22,54 @@ function formatDate(utcDate: string): string {
   const date = new Date(utcDate)
   return date.toLocaleString() // Converts UTC to local time
 }
+
+
+
+const statusColors = {
+  APPOINTMENT_CONFIRMED: {
+    bg: 'bg-green-50',
+    text: 'text-green-700',
+    border: 'border-green-200',
+  },
+  AWAITING_RESPONSE: {
+    bg: 'bg-yellow-50',
+    text: 'text-yellow-700',
+    border: 'border-yellow-200',
+  },
+  NEW_DATE_PURPOSED: {
+    bg: 'bg-orange-50',
+    text: 'text-orange-700',
+    border: 'border-orange-200',
+  },
+  ACCEPTED_BY_TEACHER: {
+    bg: 'bg-indigo-50',
+    text: 'text-indigo-700',
+    border: 'border-indigo-200',
+  },
+  CANCELLED_BY_TEACHER: {
+    bg: 'bg-red-50',
+    text: 'text-red-700',
+    border: 'border-red-200',
+  },
+  CANCELLED_BY_STUDENT: {
+    bg: 'bg-gray-50',
+    text: 'text-gray-700',
+    border: 'border-gray-200',
+  },
+}
+
+const getStatusKey = (status: string): keyof typeof statusColors => {
+  const statusMap: { [key: string]: keyof typeof statusColors } = {
+    'ยืนยันการนัดหมาย': 'APPOINTMENT_CONFIRMED',
+    'รอการตอบรับจากอาจารย์': 'AWAITING_RESPONSE',
+    'เสนอเวลานัดหมายใหม่': 'NEW_DATE_PURPOSED',
+    'ยอมรับโดยอาจารย์': 'ACCEPTED_BY_TEACHER',
+    'ยกเลิกโดยอาจารย์': 'CANCELLED_BY_TEACHER',
+    'ยกเลิกโดยนักศึกษา': 'CANCELLED_BY_STUDENT'
+  }
+  return statusMap[status] as keyof typeof statusColors || 'AWAITING_RESPONSE'
+}
+
 </script>
 
 <template>
@@ -108,9 +156,17 @@ function formatDate(utcDate: string): string {
                 {{ formatDate(appointment.finalTime) }}
               </span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              {{ appointment.status }}
-            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">
+  <span
+    :class="{
+      [statusColors[getStatusKey(appointment.status)].bg]: true,
+      [statusColors[getStatusKey(appointment.status)].text]: true,
+      'inline-flex px-3 py-1 rounded-full text-xs font-medium': true
+    }"
+  >
+    {{ appointment.status }}
+  </span>
+</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
               <div class="flex flex-col items-start gap-2">
                 <!-- Confirm Button -->
