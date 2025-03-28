@@ -145,57 +145,39 @@ function formatDate(utcDate: string): string {
 </template>
 
 <style scoped>
-.dashboard {
-  background-color: #f9fafb; /* Light gray background */
-  padding: 24px;
-  min-height: 100vh; /* Full-screen height */
-}
-
-.text-2xl {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #1f2937; /* Dark gray text */
-  margin-bottom: 16px;
-}
-
+/* Ensure the table container does not overflow */
 .appointment-teacher-table {
   background-color: #ffffff; /* White background for the table */
   border-radius: 8px; /* Rounded corners */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   padding: 24px; /* Padding around the table */
+  overflow-x: auto; /* Enable horizontal scrolling for smaller screens */
 }
 
+/* Constrain table layout */
 table {
   width: 100%; /* Full width table */
+  table-layout: fixed; /* Constrain column widths */
   border-collapse: collapse; /* Remove gaps between table cells */
 }
 
-th {
-  font-size: 12px; /* Smaller font size for headers */
-  font-weight: 600; /* Bold headers */
-  text-transform: uppercase; /* Uppercase text */
-  color: #6b7280; /* Gray text color */
-  padding: 12px 16px; /* Padding for headers */
-  background-color: #f9fafb; /* Light gray background for headers */
-}
-
+/* Ensure table headers and cells wrap text */
+th,
 td {
-  font-size: 14px; /* Normal font size for table cells */
-  color: #374151; /* Dark gray text color */
-  padding: 12px 16px; /* Padding for cells */
-  vertical-align: middle; /* Align content vertically */
+  word-wrap: break-word; /* Wrap long text */
+  overflow-wrap: break-word; /* Break long words */
+  white-space: normal; /* Allow text to wrap */
 }
 
-img {
-  border-radius: 50%; /* Circular profile images */
-  width: 40px; /* Fixed width for profile images */
-  height: 40px; /* Fixed height for profile images */
+/* Adjust button container to prevent overflow */
+td .flex {
+  flex-wrap: wrap; /* Wrap buttons to the next line if needed */
+  gap: 8px; /* Add spacing between buttons */
 }
 
+/* Button styling */
 button {
-  transition:
-    background-color 0.2s ease-in-out,
-    transform 0.2s ease-in-out; /* Smooth hover effect */
+  transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out; /* Smooth hover effect */
 }
 
 button:hover {
@@ -207,11 +189,8 @@ button:focus {
   box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.5); /* Green focus ring */
 }
 
+/* Row hover effect */
 .hover\:bg-gray-50:hover {
   background-color: #f9fafb; /* Light gray background on row hover */
-}
-
-.space-x-2 > * + * {
-  margin-left: 8px; /* Spacing between buttons */
 }
 </style>

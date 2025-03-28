@@ -32,15 +32,15 @@ const userString = localStorage.getItem('user')
 // const fetchTeacherData = async () => {
 //   try {
 //     const response = await axios.get ("https://api.example.com/professor"); //เปลี่ยนเป็น api จริง
-//     teacher.value = response.data 
+//     teacher.value = response.data
 //   } catch (error) {
 //     console.error("❌ ดึงข้อมูลอาจารย์ล้มเหลว:", error)
 //   }
 // }
 
-onMounted(() => {
-  fetchTeacherData();
-});
+// onMounted(() => {
+//   fetchTeacherData();
+// });
 </script>
 
 <template>
