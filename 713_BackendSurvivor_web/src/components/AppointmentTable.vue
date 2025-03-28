@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Appointment } from '@/types/appointment'
+import type { Appointment } from '@/types'
 import { format } from 'date-fns'
 import { th } from 'date-fns/locale'
 

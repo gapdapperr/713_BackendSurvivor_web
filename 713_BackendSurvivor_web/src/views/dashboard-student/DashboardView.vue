@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import AnnouncementService from '@/services/AnnouncementService'
 import { onMounted, ref } from 'vue'
+import { format } from 'date-fns'
+import { th } from 'date-fns/locale'
 
 const latestAnnouncement = ref()
 
@@ -28,9 +30,9 @@ const dashboardItems = [
   },
 ]
 
-function formatDate(utcDate: string): string {
-  const date = new Date(utcDate)
-  return date.toLocaleString() // Converts UTC to local time
+const formatDate = (date: string | null) => {
+  if (!date) return '-'
+  return format(new Date(date), 'PPp', { locale: th })
 }
 
 

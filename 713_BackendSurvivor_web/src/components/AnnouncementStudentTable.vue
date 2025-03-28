@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import type { Announcement } from '@/types';
 import AnnouncementModal from './AnnouncementModal.vue';
+import { format } from 'date-fns';
+import { th } from 'date-fns/locale';
 
-// const announcements = ref()
 
 const props = defineProps<{
   announcements: Announcement[]
 }>()
 
-function formatDate(utcDate: string): string {
-  const date = new Date(utcDate)
-  return date.toLocaleString() // Converts UTC to local time
+const formatDate = (date: string | null) => {
+  if (!date) return '-'
+  return format(new Date(date), 'PPp', { locale: th })
 }
 </script>
 

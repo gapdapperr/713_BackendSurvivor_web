@@ -3,6 +3,8 @@ import AppointmentService from '@/services/AppointmentService'
 import RescheduleAppointmentModal from './RescheduleAppointmentModal.vue'
 import CancelAppointment from './CancelAppointment.vue'
 import type { AppointmentByTeacher } from '@/types'
+import { format } from 'date-fns'
+import { th } from 'date-fns/locale'
 
 const props = defineProps<{
   appointments: AppointmentByTeacher[]
@@ -18,9 +20,9 @@ async function confirmAppointment(appointmentId: number) {
   }
 }
 
-function formatDate(utcDate: string): string {
-  const date = new Date(utcDate)
-  return date.toLocaleString() // Converts UTC to local time
+const formatDate = (date: string | null) => {
+  if (!date) return '-'
+  return format(new Date(date), 'PPp', { locale: th })
 }
 
 
