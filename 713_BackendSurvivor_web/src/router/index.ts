@@ -10,13 +10,13 @@ import LoginView from '@/views/LoginView.vue'
 import NetworkErrorView from '@/views/NetworkErrorView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import RegisterView from '@/views/RegisterView.vue'
-import TestPageView from '@/views/TestPageView.vue'
 import UnauthorizedView from '@/views/UnauthorizedView.vue'
 import AdminDashboardView from '@/views/dashboard-admin/DashboardView.vue'
-import TeacherView from '@/views/dashboard-admin/teacher/TeacherView.vue'
-import StudentView from '@/views/dashboard-admin/student/StudentView.vue'
 import AppointmentSummaryView from '@/views/dashboard-admin/appointment-summary/AppointmentSummaryView.vue'
+import StudentView from '@/views/dashboard-admin/student/StudentView.vue'
+import TeacherView from '@/views/dashboard-admin/teacher/TeacherView.vue'
 import StudentDashboardView from '@/views/dashboard-student/DashboardView.vue'
+import StudentAnnouncementView from '@/views/dashboard-student/announcement/AnnouncementView.vue'
 import StudentAppointmentView from '@/views/dashboard-student/appointment/AppointmentView.vue'
 import StudentCommentView from '@/views/dashboard-student/comment/CommentView.vue'
 import TeacherDashboardView from '@/views/dashboard-teacher/DashboardView.vue'
@@ -162,7 +162,7 @@ const router = createRouter({
         {
           path: 'announcements',
           name: 'student-announcements-view',
-          component: TestPageView,
+          component: StudentAnnouncementView,
         },
         {
           path: 'appointments',
