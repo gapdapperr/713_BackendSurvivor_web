@@ -1,35 +1,46 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue'
+import { ref } from 'vue'
 import StudentService from '@/services/StudentService'
 
-const students = ref() // Define the students array
-const props = defineProps<{ teacherId: number }>()  // Define the teacherId prop
+interface Student {
+  id: number
+  firstName: string
+  lastName: string
+  user: {
+    profile: string | null
+  }
+}
 
+const students = ref<Student[] | null>(null) // Define the students array with proper type
+const isLoading = ref(false) // Loading state
+const props = defineProps<{ teacherId: number }>() // Define the teacherId prop
 
-const showModal = ref(false)  // Modal visibility state
+const showModal = ref(false) // Modal visibility state
 
 // Fetch students data from the service
 async function fetchStudents() {
-try {
-  const response = await StudentService.getStudentByTeacherId(props.teacherId)
-  students.value = response.data
-} catch (error) {
-  console.log(error)
+  isLoading.value = true // Start loading
+  try {
+    const response = await StudentService.getStudentByTeacherId(props.teacherId)
+    students.value = response.data
+  } catch (error) {
+    console.error('Error fetching students:', error)
+  } finally {
+    isLoading.value = false // Stop loading
+  }
 }
-}
 
-
-
+// Function to open the modal
 const openModal = () => {
   showModal.value = true
-    fetchStudents()
+  fetchStudents()
 }
 
+// Function to close the modal
 const closeModal = () => {
   showModal.value = false
   students.value = null
 }
-
 </script>
 
 <template>
@@ -46,7 +57,14 @@ const closeModal = () => {
     <div v-if="showModal" class="modal-overlay" @click="closeModal">
       <div class="modal" @click.stop>
         <h3 class="text-lg font-bold text-gray-800 mb-4">รายชื่อนักศึกษา</h3>
-        <div v-if="students" class="overflow-x-auto">
+
+        <!-- Loading Indicator -->
+        <div v-if="isLoading" class="text-center text-gray-500">
+          กำลังโหลด...
+        </div>
+
+        <!-- Students Table -->
+        <div v-else-if="students && students.length > 0" class="overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
@@ -83,7 +101,8 @@ const closeModal = () => {
             </tbody>
           </table>
         </div>
-        <p v-else class="text-gray-500 text-center">ไม่พบนักศึกษา</p>
+
+        <!-- Close Button -->
         <div class="flex justify-end mt-4">
           <button
             @click="closeModal"

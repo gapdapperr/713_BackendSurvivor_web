@@ -1,4 +1,16 @@
 <script setup>
+import axios from 'axios';
+
+const fetchData = async (apiEndpoint) => {
+  try {
+    const response = await axios.get(apiEndpoint);
+    console.log("✅ ได้รับข้อมูล:", response.data);
+    alert("เรียก API สำเร็จ")
+  } catch (error) {
+    console.error("❌ เกิดข้อผิดพลาด:", error);
+    alert("เกิดข้อผิดพลาดในการเรียก API")
+  }
+};
 
 const dashboardItems = [
 
@@ -6,21 +18,21 @@ const dashboardItems = [
     title: "จัดการอาจารย์",
     description: "เพิ่ม และปรับปรุงข้อมูลอาจารย์",
     linkText: "ไปที่หน้าจัดการอาจารย์",
-    link: "#",
-    icon: "🧑🏻‍🏫",
+    link: 'admin-teachers-view',
+    icon: "🧑‍🏫",
   },
   {
     title: "จัดการนักศึกษา",
     description: "แก้ไข และลบข้อมูลนักศึกษา",
     linkText: "ไปที่หน้าจัดการนักศึกษา",
-    link: "#",
+    link: 'admin-students-view',
     icon: "🧑🏻‍💻",
   },
   {
     title: "สรุปการนัดหมาย",
     description: "ดูสถิติการนัดหมาย",
     linkText: "ไปที่หน้าสรุปการนัดหมาย",
-    link: "#",
+    link: 'admin-summary-view',
     icon: "📈",
   },
 ];
@@ -38,9 +50,11 @@ const dashboardItems = [
         <div class="text-4xl">{{ item.icon }}</div>
         <h2 class="text-lg font-semibold mt-4">{{ item.title }}</h2>
         <p class="text-gray-600 text-sm mt-2">{{ item.description }}</p>
-        <a :href="item.link" class="text-blue-500 font-medium mt-4 inline-block hover:underline">
+        <router-Link
+        :to="{name: item.link}" 
+        class="text-blue-500 font-medium mt-4 inline-block hover:underline">
           {{ item.linkText }} →
-        </a>
+        </router-Link>
       </div>
     </div>
   </div>

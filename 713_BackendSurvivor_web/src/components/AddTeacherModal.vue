@@ -47,26 +47,33 @@ const closeModal = () => {
   }
 }
 
-async function AddTeacher() {
-  const teacherData = new FormData()
-  teacherData.append('firstName', newTeacher.value.firstName)
-  teacherData.append('lastName', newTeacher.value.lastName)
-  teacherData.append('academicPositionId', newTeacher.value.academicPositionId)
-  teacherData.append('departmentId', newTeacher.value.departmentId)
-  teacherData.append('username', newTeacher.value.username)
-  teacherData.append('password', newTeacher.value.password)
-  console.log(teacherData)
-  if (selectedFile.value) {
-    teacherData.append('profile', selectedFile.value) // Append the file
-  }
+const errorMessage = ref('')
 
+async function AddTeacher() {
   try {
+    errorMessage.value = '' // Reset error message
+    const teacherData = new FormData()
+    teacherData.append('firstName', newTeacher.value.firstName)
+    teacherData.append('lastName', newTeacher.value.lastName)
+    teacherData.append('academicPositionId', newTeacher.value.academicPositionId)
+    teacherData.append('departmentId', newTeacher.value.departmentId)
+    teacherData.append('username', newTeacher.value.username)
+    teacherData.append('password', newTeacher.value.password)
+
+    if (selectedFile.value) {
+      teacherData.append('profile', selectedFile.value)
+    }
+
     const response = await TeacherService.addTeacher(teacherData)
-    console.log(response.data)
     props.onRefresh()
     closeModal()
-  } catch (error) {
-    console.log(error)
+  } catch (error: any) {
+    if (error.response?.status === 409) {
+      errorMessage.value = 'ชื่อผู้ใช้นี้มีอยู่ในระบบแล้ว'
+    } else {
+      errorMessage.value = 'เกิดข้อผิดพลาดในการเพิ่มอาจารย์'
+    }
+    console.error('Error adding teacher:', error)
   }
 }
 
@@ -166,25 +173,30 @@ fetchPositions()
             </select>
           </div>
           <div class="mb-4">
-            <label for="username" class="block text-sm font-medium text-gray-700">ชื่อผู้ใช้:</label>
-            <input
-              v-model="newTeacher.username"
-              type="text"
-              id="username"
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              required
-            />
-          </div>
+    <label for="username" class="block text-sm font-medium text-gray-700">ชื่อผู้ใช้:</label>
+    <input
+      v-model="newTeacher.username"
+      type="text"
+      id="username"
+      class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+      :class="{ 'border-red-500': errorMessage }"
+      required
+    />
+    <p v-if="errorMessage" class="mt-1 text-sm text-red-600">{{ errorMessage }}</p>
+  </div>
           <div class="mb-4">
-            <label for="password" class="block text-sm font-medium text-gray-700">รหัสผ่าน:</label>
-            <input
-              v-model="newTeacher.password"
-              type="password"
-              id="password"
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              required
-            />
-          </div>
+  <label for="password" class="block text-sm font-medium text-gray-700">รหัสผ่าน:</label>
+  <input
+    v-model="newTeacher.password"
+    type="password"
+    id="password"
+    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+    required
+    minlength="8"
+    title="กรุณากรอกรหัสผ่าน 8 หลัก"
+  />
+  <p class="mt-1 text-sm text-gray-500">*กรุณากรอกรหัสผ่าน 8 หลัก</p>
+</div>
           <div class="mb-4">
             <label for="profile" class="block text-sm font-medium text-gray-700">รูปโปรไฟล์:</label>
             <input

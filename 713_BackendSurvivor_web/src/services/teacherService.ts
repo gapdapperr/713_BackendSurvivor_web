@@ -19,5 +19,8 @@ export default {
         'Content-Type': 'multipart/form-data', // Set the correct content type for file uploads
       },
     })
-  }
+  },
+  getMyTeacher() {
+    return apiClient.get('/api/v1/teachers/my-teacher')
+  },
 }

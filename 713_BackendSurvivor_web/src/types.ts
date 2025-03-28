@@ -85,6 +85,10 @@ export interface Teacher {
   }
 }
 
+export interface TeacherState {
+  teacher: Teacher | null
+}
+
 export interface MessageState {
   message: string
   type?: 'success' | 'error' | 'info'
@@ -94,7 +98,6 @@ export interface Department {
   id: number
   name: string
 }
-
 
 export interface Comment {
   id: number
@@ -130,3 +133,77 @@ export interface Position {
   title: string
 }
 
+export interface Appointment {
+  id: number
+  title: string
+  content: string
+  requestedTime: string
+  finalTime: string | null
+  status: string
+  isAccepted: boolean
+  createdAt: string
+  student: {
+    id: number
+    firstName: string
+    lastName: string
+    department: {
+      name: string
+    }
+  }
+  teacher: {
+    id: number
+    firstName: string
+    lastName: string
+    academicPosition: {
+      title: string
+    }
+    department: {
+      name: string
+    }
+  }
+}
+
+export interface AppointmentSummary {
+  AWAITING_RESPONSE: Appointment[]
+  ACCEPTED_BY_TEACHER: Appointment[]
+  NEW_DATE_PURPOSED: Appointment[]
+  APPOINTMENT_CONFIRMED: Appointment[]
+  CANCELLED_BY_TEACHER: Appointment[]
+  CANCELLED_BY_STUDENT: Appointment[]
+}
+
+export interface AppointmentByTeacher {
+  id: number
+  title: string
+  content: string
+  requestedTime: string
+  finalTime: string
+  createdAt: string
+  status: string
+  isAccepted: boolean
+  student: {
+    id: number
+    firstName: string
+    lastName: string
+    user: {
+      profile: string
+    }
+  }
+}
+
+export interface Announcement {
+  id: number
+  title: string
+  content: string
+  fileUrl: string
+  createdAt: string
+  updatedAt: string
+  teacherId: number
+}
+
+export interface CreateAnnouncementForm {
+  title: string
+  content: string
+  teacherId: number
+  file: File | null
+}

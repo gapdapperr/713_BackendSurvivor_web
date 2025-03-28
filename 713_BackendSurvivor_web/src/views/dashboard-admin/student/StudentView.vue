@@ -108,6 +108,51 @@ watchEffect(() => {
       </div>
     </div>
 
+    <!-- Empty State -->
+    <div v-else-if="students.length === 0" class="text-center py-12">
+      <svg
+        class="mx-auto h-16 w-16 text-gray-400"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+        />
+      </svg>
+      <h3 class="mt-4 text-lg font-medium text-gray-900">
+        {{ keyword ? 'ไม่พบข้อมูลนักศึกษาที่ค้นหา' : 'ไม่พบข้อมูลนักศึกษา' }}
+      </h3>
+      <p class="mt-2 text-sm text-gray-500">
+        {{
+          keyword ? `ไม่พบนักศึกษาที่ตรงกับคำค้นหา "${keyword}"` : 'ยังไม่มีข้อมูลนักศึกษาในระบบ'
+        }}
+      </p>
+      <button
+        v-if="keyword"
+        @click="
+          () => {
+            keyword = ''
+            handleSearch()
+          }
+        "
+        class="mt-4 inline-flex items-center px-4 py-2 text-sm font-medium text-indigo-600 bg-white border border-indigo-600 rounded-md hover:bg-indigo-50"
+      >
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+        ล้างการค้นหา
+      </button>
+    </div>
+
     <!-- Student Table -->
     <StudentAdminTable v-else :students="students" :onRefresh="fetchStudents" />
 

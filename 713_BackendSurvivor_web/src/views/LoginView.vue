@@ -13,7 +13,7 @@ const messageStore = useMessageStore()
 const isLoading = ref(false)
 const validationSchema = yup.object({
   username: yup.string().required('กรุณากรอกชื่อผู้ใช้'),
-  password: yup.string().required('กรุณากรอกรหัสผ่าน').min(5, 'รหัสผ่านต้องมีอย่างน้อย 5 ตัวอักษร'),
+  password: yup.string().required('กรุณากรอกรหัสผ่าน').min(8, 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร'),
 })
 
 const redirectToDashboard = () => {
@@ -47,8 +47,12 @@ const onSubmit = handleSubmit(async (values: { username: string; password: strin
     messageStore.updateMessage('เข้าสู่ระบบสำเร็จ', 'success')
     redirectToDashboard()
   } catch (error: any) {
-    const errorMessage = error?.response?.data?.message || 'ไม่สามารถเข้าสู่ระบบได้'
-    messageStore.updateMessage(errorMessage, 'error')
+    if (error.response?.status === 401) {
+      messageStore.updateMessage('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง', 'error')
+    } else {
+      const errorMessage = error?.response?.data?.message || 'ไม่สามารถเข้าสู่ระบบได้'
+      messageStore.updateMessage(errorMessage, 'error')
+    }
   } finally {
     isLoading.value = false
   }
@@ -56,32 +60,18 @@ const onSubmit = handleSubmit(async (values: { username: string; password: strin
 </script>
 
 <template>
-  <div class="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+  <div class="flex min-h-full flex-1 flex-col justify-center px-6 py-8 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
       <img
-        class="mx-auto h-10 w-auto"
-        src="https://tailwindcss.com/_next/static/media/tailwindcss-mark.d52e9897.svg"
+        class="mx-auto h-40 w-auto"
+        src="https://waedbkvmagwfzbzpdost.supabase.co/storage/v1/object/public/files/uploads/logo.png"
         alt="ระบบอาจารย์ที่ปรึกษา"
       />
-      <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+      <h2 class="mt-5 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
         เข้าสู่ระบบ
       </h2>
     </div>
-    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <!-- Message Alert -->
-      <div
-        v-if="messageStore.message"
-        :class="[
-          'mb-4 p-4 rounded-md border',
-          {
-            'bg-red-50 border-red-200 text-red-600': messageStore.type === 'error',
-            'bg-green-50 border-green-200 text-green-600': messageStore.type === 'success',
-            'bg-blue-50 border-blue-200 text-blue-600': messageStore.type === 'info',
-          },
-        ]"
-      >
-        <p class="text-sm">{{ messageStore.message }}</p>
-      </div>
+    <div class="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
       <form class="space-y-6" @submit.prevent="onSubmit">
         <div>
           <label for="username" class="block text-sm font-medium leading-6 text-gray-900"
@@ -117,6 +107,20 @@ const onSubmit = handleSubmit(async (values: { username: string; password: strin
               autocomplete="false"
             />
           </div>
+        </div>
+        <!-- Message Alert -->
+        <div
+          v-if="messageStore.message"
+          :class="[
+            'mb-4 p-4 rounded-md border',
+            {
+              'bg-red-50 border-red-200 text-red-600': messageStore.type === 'error',
+              'bg-green-50 border-green-200 text-green-600': messageStore.type === 'success',
+              'bg-blue-50 border-blue-200 text-blue-600': messageStore.type === 'info',
+            },
+          ]"
+        >
+          <p class="text-sm">{{ messageStore.message }}</p>
         </div>
         <div>
           <button

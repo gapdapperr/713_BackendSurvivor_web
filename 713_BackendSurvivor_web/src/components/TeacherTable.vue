@@ -29,22 +29,22 @@ const props = defineProps<{
             <th
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
-              Name
+              ชื่อ
             </th>
             <th
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
-              Position
+              ตำแหน่งทางวิชาการ
             </th>
             <th
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
-              Department
+              ภาควิชา
             </th>
             <th
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
-              Number of Students
+              จำนวนนักศึกษา
             </th>
             <th
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -86,7 +86,8 @@ const props = defineProps<{
               {{ teacher._count?.students || 0 }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-              <StudentByTeacherModal :teacherId="teacher.id" />
+              <div  v-if="(teacher._count?.students ?? 0) > 0" >
+              <StudentByTeacherModal :teacherId="teacher.id" /></div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
               <EditTeacherModal :Teacher="teacher" :onRefresh="props.onRefresh" />
