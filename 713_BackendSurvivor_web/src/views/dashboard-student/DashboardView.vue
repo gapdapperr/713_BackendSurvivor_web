@@ -94,6 +94,9 @@ onMounted(() => {
           <hr class="my-4" />
         </div>
       </div>
+      <div v-else-if="latestAnnouncement === null">
+        <p class="text-gray-500">กำลังโหลด...</p>
+      </div>
       <p v-else class="text-gray-500">ไม่มีประกาศในขณะนี้</p>
     </div>
 
